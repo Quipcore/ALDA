@@ -1,9 +1,6 @@
 package linearDatastructures;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 public class MyALDAList<E> implements ALDAList<E>{
@@ -65,43 +62,31 @@ public class MyALDAList<E> implements ALDAList<E>{
             throw new IndexOutOfBoundsException();
         }
 
+        LinkedList<E> list = new LinkedList<>();
+
         Node<E> node = head;
         for(int i = 0; i < index; i++){
             node = node.next;
         }
 
         E data = node.data;
-
         node.prev = node.next;
-
         return data;
     }
-
-    //TODO: Fix implementation
     @Override
     public boolean remove(E element) {
-        Node<E> current = head;
-        Node<E> prev = head;
-        boolean removedElement = false;
         if(head.data == null){
             return false;
         }
 
-        for(int i = 0; i < size; i++){
-            current = current.next;
-            if(current.next == null){
-                return removedElement;
+        for(E elem : this){
+            if(elem.equals(element)){
+                remove(indexOf(element));
+                return true;
             }
-
-            if(current.data.equals(element)){
-                prev.next = current.next;
-                size--;
-                removedElement = true;
-            }
-            prev = prev.next;
         }
 
-        return removedElement;
+        return false;
     }
 
     @Override
@@ -214,7 +199,12 @@ public class MyALDAList<E> implements ALDAList<E>{
 
         @Override
         public E next() {
-            return get(nextIndex++);
+            if(nextIndex >= size){
+                throw new NoSuchElementException();
+            }
+            E data = get(nextIndex);
+            nextIndex++;
+            return data;
         }
 
         @Override
