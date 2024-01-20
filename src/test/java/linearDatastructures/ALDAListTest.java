@@ -134,6 +134,7 @@ public class ALDAListTest {
 		list.add(2, "C");
 		assertEquals(8, list.size());
 		assertEquals("A", list.get(0));
+		System.out.println(list);
 		assertEquals("C", list.get(2));
 		assertEquals("B", list.get(7));
 		assertEquals("[A, First, C, Second, Third, Fourth, Fifth, B]", list.toString());
@@ -306,7 +307,12 @@ public class ALDAListTest {
 		// each random operation in the test below.
 		assertEquals(oracle.size(), list.size());
 		for (int n = 0; n < oracle.size(); n++) {
+			if(!oracle.get(n).equals(list.get(n))){
+				System.out.println(oracle);
+				System.out.println(list);
+			}
 			assertEquals(oracle.get(n), list.get(n));
+
 		}
 		assertEquals(oracle.toString(), list.toString());
 	}

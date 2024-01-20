@@ -1,5 +1,7 @@
 package linearDatastructures;
 
+//Felix Lidö feli8145
+
 import java.util.*;
 
 
@@ -9,7 +11,7 @@ public class MyALDAList<E> implements ALDAList<E>{
 
 
     public MyALDAList(){
-        this.head = new Node<>();
+        this.head = new Node<>(null);
         this.size = 0;
     }
 
@@ -35,7 +37,11 @@ public class MyALDAList<E> implements ALDAList<E>{
             throw new IndexOutOfBoundsException();
         }
 
-        Node<E> node = head;
+        if(index == size){
+            add(element);
+            return;
+        }
+
         size++;
 
         if(index == 0){
@@ -46,13 +52,15 @@ public class MyALDAList<E> implements ALDAList<E>{
             return;
         }
 
-        for(int i = 0; i < index; i++){
+        Node<E> node = head;
+        for(int i = 0; i < index-1; i++){
             node = node.next;
         }
 
         Node<E> nextNode = node.next;
         node.next = new Node<>(element,node);
         node.next.next = nextNode;
+        nextNode.prev = node.next;
     }
 
 
@@ -62,15 +70,40 @@ public class MyALDAList<E> implements ALDAList<E>{
             throw new IndexOutOfBoundsException();
         }
 
-        LinkedList<E> list = new LinkedList<>();
+        size--;
 
-        Node<E> node = head;
-        for(int i = 0; i < index; i++){
-            node = node.next;
+        //Set to head to next
+        if(index == 0) {
+            E data = head.data;
+            if (size == 0) { //Compare to zero because of the size--
+                clear();
+            }
+            else{
+                head.next.prev = null;
+                head = head.next;
+            }
+            return data;
         }
 
-        E data = node.data;
-        node.prev = node.next;
+        Node<E> nodeToRemove = head;
+        for(int i = 0; i < index; i++){
+            nodeToRemove = nodeToRemove.next;
+        }
+
+        E data = nodeToRemove.data;
+
+        //Node to remove is tail, so just move the tail
+        if(nodeToRemove.next == null){
+            nodeToRemove.prev.next = null;
+            return data;
+        }
+
+        Node<E> prev = nodeToRemove.prev;
+        Node<E> next = nodeToRemove.next;
+
+        prev.next = next;
+        next.prev = prev;
+
         return data;
     }
     @Override
@@ -129,7 +162,7 @@ public class MyALDAList<E> implements ALDAList<E>{
 
     @Override
     public void clear() {
-        head = new Node<>();
+        head = new Node<>(null);
         size = 0;
     }
 
@@ -148,12 +181,17 @@ public class MyALDAList<E> implements ALDAList<E>{
         StringBuilder stringBuilder = new StringBuilder("[");
 
         Node<E> node = head;
+        if(node == null){
+            return "[]";
+        }
+
         for(int i = 0; i < size-1; i++){
             stringBuilder.append(node.data);
             stringBuilder.append(", ");
             node = node.next;
         }
-        if(node.data != null){
+
+        if(node != null && node.data != null){
             stringBuilder.append(node.data);
         }
 
@@ -163,33 +201,37 @@ public class MyALDAList<E> implements ALDAList<E>{
     }
 
     private static class Node<E>{
-        public Node(E data){
+
+        private E data;
+        private Node<E> next;
+        private Node<E> prev;
+
+        Node(E data){
             this.data = data;
             this.next = null;
             this.prev = null;
         }
 
-        public Node(E data, Node<E> prev){
+        Node(E data, Node<E> prev){
             this.data = data;
             this.next = null;
             this.prev = prev;
         }
 
-        public Node(){
-            this.data = null;
-            this.next = null;
-            this.prev = null;
+
+        @Override
+        public String toString() {
+            return data.toString();
         }
-        private E data;
-        private Node<E> next;
-        private Node<E> prev;
     }
 
     private class ALDAListIterator implements Iterator<E>{
         private int nextIndex;
+        private boolean nextHasBeenCalled;
 
         ALDAListIterator(){
             nextIndex = 0;
+            nextHasBeenCalled = false;
         }
 
         @Override
@@ -202,13 +244,19 @@ public class MyALDAList<E> implements ALDAList<E>{
             if(nextIndex >= size){
                 throw new NoSuchElementException();
             }
-            E data = get(nextIndex);
+            E data = MyALDAList.this.get(nextIndex);
             nextIndex++;
+            nextHasBeenCalled = true;
             return data;
         }
 
         @Override
         public void remove() {
+            if(!nextHasBeenCalled){
+                throw new IllegalStateException();
+            }
+            nextIndex--;
+            nextHasBeenCalled = false;
             MyALDAList.this.remove(nextIndex);
         }
     }
