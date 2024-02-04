@@ -41,31 +41,141 @@ public class BinarySearchTreeNode<T extends Comparable<T>> {
     }
 
     public boolean add(T data) {
-        return false;
+
+        int compareResult = data.compareTo(this.data);
+        if(compareResult == 0){
+            return false;
+        }
+
+        if(compareResult < 0) {
+            if (left == null) {
+                left = new BinarySearchTreeNode<>(data);
+                return true;
+            }
+            return left.add(data);
+        }
+
+        if (right == null) {
+            right = new BinarySearchTreeNode<>(data);
+            return true;
+        }
+        return right.add(data);
     }
 
     private T findMin() {
-        return null;
+        if(left == null){
+            return data;
+        }
+
+        return left.findMin();
     }
 
     public BinarySearchTreeNode<T> remove(T data) {
-        return null;
+
+        //No need to remove an element that doesn't exist
+        if(!contains(data)){
+            return this;
+        }
+
+        //Root
+        if(data.equals(this.data)){
+            if(right != null){
+                T min = right.findMin();
+                right = right.remove(min);
+                this.data = min;
+                return this;
+            } else if (left != null) {
+                return left;
+            }else {
+                return null;
+            }
+        }
+
+        //Remove from left
+        if(left != null && left.contains(data)){
+            if(left.isLeaf()){
+                left = null;
+                return this;
+            }
+            left = left.remove(data);
+            return this;
+        }
+        //Remove from right
+        else if (right != null && right.contains(data)) {
+            if(right.isLeaf()){
+                right = null;
+                return this;
+            }
+            right = right.remove(data);
+            return this;
+        }
+
+        return null; //Never hit by test
+    }
+
+
+
+    private boolean isLeaf(){
+        return left == null && right == null;
     }
 
     public boolean contains(T data) {
-        return false;
+
+        if(this.data == null){return false;}
+        if(this.data.equals(data)){return true;}
+
+        if(data.compareTo(this.data) < 0){
+            if(left == null){
+                return false;
+            }
+            return left.contains(data);
+        }
+
+        if(right == null){
+            return false;
+        }
+        return right.contains(data);
     }
 
     public int size() {
-        return 0;
+
+        int sizeOfLeft = left != null ? left.size() : 0;
+        int sizeOfRight = right != null ? right.size() : 0;
+        int sizeOfCurrent = data != null ? 1 : 0;
+
+        return sizeOfCurrent + sizeOfLeft + sizeOfRight;
     }
 
     public int depth() {
-        return -1;
+        if(isLeaf()){
+            return 0;
+        }
+
+        int depthOfLeft = left == null ? 0 : left.depth();
+        int depthOfRight = right == null ? 0 : right.depth();
+        return Math.max(depthOfLeft, depthOfRight) + 1;
     }
 
     public String toString() {
-        return "";
+        String node = "";
+        if(left != null){
+            node += left.toString();
+        }
+
+        if(data != null){
+            if(!node.isEmpty()){
+                node += ", ";
+            }
+            node += data.toString();
+        }
+
+        if(right != null){
+            if(!node.isEmpty()){
+                node += ", ";
+            }
+            node += right.toString();
+        }
+
+        return node;
     }
 }
-

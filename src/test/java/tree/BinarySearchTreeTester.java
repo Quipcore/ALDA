@@ -70,6 +70,7 @@ public class BinarySearchTreeTester {
     @Test
     public void testRemoveExistingLeaf() {
         assertTrue(tree.remove(1));
+        System.out.println(tree);
         assertEquals(5, tree.size());
         assertEquals("[2, 3, 4, 5, 6]", tree.toString());
     }
