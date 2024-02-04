@@ -1,2 +1,2 @@
 # ALDA
-Repo for a data structures and algorithms course
+Repo for algorithms and data structures course
