@@ -1,4 +1,4 @@
-package algorithmAnalisys;
+package algorithmAnalysis;
 
 import java.util.LinkedList;
 import java.util.List;
