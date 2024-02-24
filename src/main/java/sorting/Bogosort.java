@@ -1,6 +1,5 @@
 package sorting;
 
-import java.util.Collections;
 import java.util.Random;
 
 public class Bogosort {
@@ -31,8 +30,9 @@ public class Bogosort {
         }
     }
 
-    public static void main(String[] args) {
 
+
+    public static void main(String[] args) {
         Integer[] arr = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
         shuffle(arr);
 
