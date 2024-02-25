@@ -148,7 +148,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T>{
         return null;
     }
 
-    //Prims algo
+    //Prims algorithm
     @Override
     public UndirectedGraph<T> minimumSpanningTree() {
 
