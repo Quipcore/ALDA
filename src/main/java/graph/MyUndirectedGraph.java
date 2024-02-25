@@ -94,21 +94,30 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T>{
 
     @Override
     public List<T> depthFirstSearch(T start, T end) {
-
-
-
-//        if(start.equals(end)){
-//            return List.of(start);
-//        }
-//        Set<T> visited = new HashSet<>(Set.of(start));
-//
-//        return dfs(start,end,visited);
-        return null;
+        return dfs(start,end,new HashSet<>()).reversed();
     }
 
-    private List<T> dfs(T start, T end, Set<T> visited){
+    private List<T> dfs(T vertex, T end, Set<T> visited) {
+        if(vertex.equals(end)){
+            return new ArrayList<>(List.of(vertex));
+        }
+
+        visited.add(vertex);
+
+        for(Edge<T> edge : adjacencies.get(vertex)){
+            T neighbour = edge.getNeighbour(vertex);
+            if(!visited.contains(neighbour)){
+                List<T> path = dfs(neighbour,end,visited);
+                if(path.contains(end)){
+                    path.add(vertex);
+                    return path;
+                }
+            }
+        }
+
         return new ArrayList<>();
     }
+
 
     //Modified after Wikipedia Pseudocode
     @Override
