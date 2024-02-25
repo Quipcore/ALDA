@@ -1,5 +1,7 @@
 package graph;
 
+import java.util.Objects;
+
 public class Edge <T> {
     T nodeOne;
     T nodeTwo;
@@ -34,5 +36,18 @@ public class Edge <T> {
         }
     }
 
+    //Generated via Wizard
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Edge<?> edge = (Edge<?>) object;
+        return cost == edge.cost && Objects.equals(nodeOne, edge.nodeOne) && Objects.equals(nodeTwo, edge.nodeTwo);
+    }
 
+    //Generated via Wizard
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodeOne, nodeTwo, cost);
+    }
 }
