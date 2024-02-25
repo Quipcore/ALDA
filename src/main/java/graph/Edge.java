@@ -1,11 +1,12 @@
 package graph;
-
 import java.util.Objects;
 
 public class Edge <T> {
-    T nodeOne;
-    T nodeTwo;
-    int cost;
+
+    private T nodeOne;
+    private T nodeTwo;
+    private int cost;
+
     public Edge(T nodeOne, T nodeTwo, int cost){
         this.nodeOne = nodeOne;
         this.nodeTwo = nodeTwo;
@@ -16,9 +17,21 @@ public class Edge <T> {
         return cost;
     }
 
-    public boolean isBetween(T node1, T node2){
-        return (nodeOne.equals(node1) && nodeTwo.equals(node2))
-            || (nodeOne.equals(node2) && nodeTwo.equals(node1));
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    public T getNodeTwo() {
+        return nodeTwo;
+    }
+
+    public T getNodeOne() {
+        return nodeOne;
+    }
+
+    public boolean isBetween(T nodeA, T nodeB){
+        return nodeOne.equals(nodeA) && nodeTwo.equals(nodeB)
+                || nodeOne.equals(nodeB) && nodeTwo.equals(nodeA);
     }
 
     /**
