@@ -94,58 +94,66 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T>{
 
     @Override
     public List<T> depthFirstSearch(T start, T end) {
-        if(start.equals(end)){
-            return List.of(start);
-        }
-        Set<T> visited = new HashSet<>(Set.of(start));
 
-        return dfs(start,end,visited);
+
+
+//        if(start.equals(end)){
+//            return List.of(start);
+//        }
+//        Set<T> visited = new HashSet<>(Set.of(start));
+//
+//        return dfs(start,end,visited);
+        return null;
     }
 
     private List<T> dfs(T start, T end, Set<T> visited){
-
-        visited.add(start);
-
-        List<T> path = new ArrayList<>();
-
-        if(start.equals(end)){
-            path.add(start);
-            return path;
-        }
-
-        Set<Edge<T>> edges = adjacencies.get(start);
-
-        if(edges == null){
-            return null;
-        }
-
-        for(Edge<T> edge : edges){
-            T next = edge.getNeighbour(start);
-            if(visited.contains(next)){
-                continue;
-            }
-
-            if(next.equals(end)){
-                path.add(end);
-                return path;
-            }
-
-            List<T> nodes = dfs(next,end,visited);
-            if(nodes.getLast().equals(end)){
-                return nodes;
-            }
-        }
-        return null;
+        return new ArrayList<>();
     }
 
+    //Modified after Wikipedia Pseudocode
     @Override
     public List<T> breadthFirstSearch(T start, T end) {
-
         if(start.equals(end)){
             return List.of(start);
         }
 
-        return null;
+
+        Map<T,T> parentNode = new HashMap<>();
+        PriorityQueue<T> queue = new PriorityQueue<>();
+        Set<T> explored = new HashSet<>();
+        explored.add(start);
+        queue.add(start);
+
+        while(!queue.isEmpty()){
+            T vertex = queue.poll();
+
+            if(vertex.equals(end)){
+                return generatePath(parentNode, start, vertex);
+            }
+
+            for(Edge<T> edge : adjacencies.get(vertex)){
+                T vertexNeighbour = edge.getNeighbour(vertex);
+                if(!explored.contains(vertexNeighbour)){
+                    explored.add(vertexNeighbour);
+                    parentNode.put(vertexNeighbour,vertex);
+                    queue.add(vertexNeighbour);
+                }
+
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    private List<T> generatePath(Map<T,T> parentNode, T startNode, T endNode) {
+        List<T> path = new ArrayList<>();
+        path.add(endNode);
+        T vertex = parentNode.get(endNode);
+        while(!vertex.equals(startNode)){
+            path.add(vertex);
+            vertex = parentNode.get(vertex);
+        }
+        path.add(vertex);
+        return path.reversed();
     }
 
     //Prims algorithm
