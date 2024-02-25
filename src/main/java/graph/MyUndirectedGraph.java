@@ -155,6 +155,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T>{
         MyUndirectedGraph<T> minimumTree = new MyUndirectedGraph<>();
         Set<T> nodes = new HashSet<>(adjacencies.keySet());
 
+        //Add first node arbitrarily
         T startNode = nodes.iterator().next();
         nodes.remove(startNode);
         minimumTree.add(startNode);
@@ -165,7 +166,6 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T>{
             if(lowestEdgeAway == null){
                 throw new IllegalStateException("Could not find lowest edge away from tree, graph might be incomplete");
             }
-
             T treeNode = minimumTree.contains(lowestEdgeAway.nodeOne) ? lowestEdgeAway.nodeOne : lowestEdgeAway.nodeTwo;
             T awayNode = lowestEdgeAway.getNeighbour(treeNode);
 
