@@ -1,3 +1,5 @@
+package algorithmDesign;
+
 public class HuffmanCoder {
 
 	public EncodedMessage<?, ?> encode(String msg) {

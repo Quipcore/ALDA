@@ -1,3 +1,5 @@
+package algorithmDesign;
+
 public final class EncodedMessage<HeaderType, MessageType> {
 	/**
 	 * Information needed to decode the three, i.e. the huffman tree in some
