@@ -24,7 +24,7 @@ class HuffmanCoderTest {
 	}
 
 	private void test(String msg) {
-		EncodedMessage<?, ?> encoded = coder.encode(msg);
+		EncodedMessage encoded = coder.encode(msg);
 		String decoded = coder.decode(encoded);
 		assertEquals(msg, decoded);
 	}
