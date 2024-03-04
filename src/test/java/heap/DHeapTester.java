@@ -16,6 +16,7 @@ public class DHeapTester {
 
     private DHeap<Integer> heap = new DHeap<>(4);
 
+
     /**
      * Detta test kontrollerar att er kod implementerar en fungerande prioritetskö.
      * Detta test ska naturligtvis fungera.
@@ -33,7 +34,16 @@ public class DHeapTester {
             oracle.add(tal);
 
             while (!heap.isEmpty() && rnd.nextBoolean()) {
-                assertEquals(oracle.poll(), heap.deleteMin());
+
+                Integer oracleQueue = oracle.poll();
+                Integer dHeap = heap.deleteMin();
+
+                if(!oracleQueue.equals(dHeap)){
+                    System.out.println("D");
+                }
+
+
+                assertEquals(oracleQueue, dHeap);
             }
 
             assertEquals(oracle.isEmpty(), heap.isEmpty());
@@ -53,9 +63,9 @@ public class DHeapTester {
      */
     @Test
     public void testConstructors() {
-        heap = new DHeap<Integer>(); // Skapar en binär heap
-        heap = new DHeap<Integer>(2); // Skapar ytterligare en binär heap
-        heap = new DHeap<Integer>(3); // Skapar en 3-heap, dvs en heap där varje
+        heap = new DHeap<>(); // Skapar en binär heap
+        heap = new DHeap<>(2); // Skapar ytterligare en binär heap
+        heap = new DHeap<>(3); // Skapar en 3-heap, dvs en heap där varje
         // nod har 3 barn
     }
 

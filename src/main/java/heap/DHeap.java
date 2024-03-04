@@ -25,17 +25,16 @@ package heap;
 public class DHeap<T extends Comparable<? super T>> {
     private static final int DEFAULT_CAPACITY = 10;
     private static final int DEFAULT_D_VALUE = 2;
-    private int dValue;
+    private final int dValue;
     private int currentSize;      // Number of elements in heap
     private T[] array; // The heap array
 
     /**
-     * Construct the binary heap.12
+     * Construct the binary heap.
      */
     public DHeap() {
         this(DEFAULT_D_VALUE);
     }
-
 
     /**
      * Construct the binary heap.
@@ -43,26 +42,12 @@ public class DHeap<T extends Comparable<? super T>> {
      * @param dValue the capacity of the binary heap.
      */
     public DHeap(int dValue) {
-        if(dValue < 2){
+        if (dValue < 2) {
             throw new IllegalArgumentException(dValue + " is an invalid d-value for the heap");
         }
         this.dValue = dValue;
         currentSize = 0;
         array = (T[]) new Comparable[DEFAULT_CAPACITY];
-    }
-
-    /**
-     * Construct the binary heap given an array of items.
-     */
-    @Deprecated
-    public DHeap(T[] items) {
-        array = (T[]) new Comparable[(items.length + dValue) * 11 / 10];
-
-        int i = 1;
-        for (T item : items) {
-            array[i++] = item;
-        }
-        buildHeap();
     }
 
     // Test program
@@ -88,34 +73,24 @@ public class DHeap<T extends Comparable<? super T>> {
      */
     public void insert(T x) {
         if (currentSize == array.length - 1) {
-            enlargeArray(array.length * dValue + 1);
+            enlargeArray(firstChildIndex(array.length) + 1);
         }
 
-        // Percolate up
-//        int hole = ++currentSize;
-//        for (array[0] = x; x.compareTo(array[parentIndex(hole)]) < 0; hole = parentIndex(hole)) {
-//            array[hole] = array[parentIndex(hole)];
-//        }
-//        array[hole] = x;
         currentSize++;
         int holePos = currentSize;
 
         array[0] = x;
-
-        while (x.compareTo(array[parentIndex(holePos)]) < 0){
+        while (holePos != 1 && x.compareTo(array[parentIndex(holePos)]) < 0) {
             array[holePos] = array[parentIndex(holePos)];
             holePos = parentIndex(holePos);
         }
         array[holePos] = x;
-
     }
 
     private void enlargeArray(int newSize) {
         T[] old = array;
         array = (T[]) new Comparable[newSize];
-        for (int i = 0; i < old.length; i++) {
-            array[i] = old[i];
-        }
+        System.arraycopy(old, 0, array, 0, old.length);
     }
 
     /**
@@ -141,7 +116,8 @@ public class DHeap<T extends Comparable<? super T>> {
         }
 
         T minItem = findMin();
-        array[1] = array[currentSize--];
+        array[1] = array[currentSize];
+        currentSize--;
         percolateDown(1);
 
         return minItem;
@@ -153,7 +129,7 @@ public class DHeap<T extends Comparable<? super T>> {
      */
     @Deprecated
     private void buildHeap() {
-        for (int i = currentSize / dValue; i > 0; i--) {
+        for (int i = (currentSize / dValue); i > 0; i--) {
             percolateDown(i);
         }
     }
@@ -182,36 +158,45 @@ public class DHeap<T extends Comparable<? super T>> {
     private void percolateDown(int hole) {
         int child;
         T tmp = array[hole];
-
-        for (; hole * dValue <= currentSize; hole = child) {
-            child = hole * dValue;
-            if (child != currentSize && array[child + 1].compareTo(array[child]) < 0) {
-                child++;
-            }
+        while (firstChildIndex(hole) <= currentSize) {
+            child = getIndexOfLowestChild(hole);
             if (array[child].compareTo(tmp) < 0) {
                 array[hole] = array[child];
-            }
-            else {
+            } else {
                 break;
             }
+
+            hole = child;
         }
         array[hole] = tmp;
     }
 
+    private int getIndexOfLowestChild(int hole) {
+        int firstChild = firstChildIndex(hole);
+        int minIndex = firstChild;
+        for (int i = 1; i < dValue; i++) {
+            int nextChild = firstChild + i;
+            if (nextChild <= currentSize && array[nextChild].compareTo(array[minIndex]) < 0) {
+                minIndex = nextChild;
+            }
+        }
+        return minIndex;
+    }
+
 
     public int firstChildIndex(int parentIndex) {
-        if(parentIndex <= 0){
+        if (parentIndex <= 0) {
             throw new IllegalArgumentException("Index to low");
         }
-        return dValue * (parentIndex -1) + 2;
+        return dValue * (parentIndex - 1) + 2;
     }
 
     public int parentIndex(int childIndex) {
-        if(childIndex <= 1){ //First pos is root and has no parents
+        if (childIndex <= 1) { //First pos is root and has no parents
             throw new IllegalArgumentException("Index to low");
         }
 
-        return (childIndex - 2)/dValue +1;
+        return (childIndex - 2) / dValue + 1;
     }
 
     public int size() {
