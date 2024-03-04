@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 public class DHeapTester {
 
-    private DHeap<Integer> heap = new DHeap<Integer>(4);
+    private DHeap<Integer> heap = new DHeap<>(4);
 
     /**
      * Detta test kontrollerar att er kod implementerar en fungerande prioritetskö.
@@ -23,7 +23,7 @@ public class DHeapTester {
     @Test
     public void testFunctionality() {
         Random rnd = new Random();
-        PriorityQueue<Integer> oracle = new PriorityQueue<Integer>();
+        PriorityQueue<Integer> oracle = new PriorityQueue<>();
 
         assertEquals(oracle.isEmpty(), heap.isEmpty());
 
