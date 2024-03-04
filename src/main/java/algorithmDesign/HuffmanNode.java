@@ -55,19 +55,8 @@ public class HuffmanNode implements Comparable<HuffmanNode>{
             rightPath = rightChildNode.findPathToCharacter(character, path +"1");
         }
 
-        if(leftPath == null && rightPath == null){
-            return null;
-        }
-
-        if(leftPath == null){
-            return rightPath;
-        }
-
-        if(rightPath == null){
-            return leftPath;
-        }
-
-        return null;
+        return leftPath == null ? rightPath
+                : rightPath == null ? leftPath : null;
     }
 
     public HuffmanNode getRightChild() {
