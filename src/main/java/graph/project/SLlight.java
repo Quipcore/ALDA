@@ -1,6 +1,9 @@
 package graph.project;
 
 
+import java.util.List;
+import java.util.Vector;
+
 /**
  * SL-light
  *
@@ -15,4 +18,11 @@ package graph.project;
  * Data för SL:s tidtabeller finns tillgängligt här i ilearn. För VG ska det fungera med en graf av den storleken. (Precis som för Bacon-talen är tidtabellen några år gammal, men det spelar naturligtvis ingen roll för uppgiften.)
  */
 public class SLlight {
+    private class Node{
+        String stationName;
+
+        Vector2 coordinates;
+        List<Node> neighbours;
+    }
+
 }

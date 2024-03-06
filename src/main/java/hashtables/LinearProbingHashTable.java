@@ -7,7 +7,21 @@ public class LinearProbingHashTable<T> extends ProbingHashTable<T> {
 	 */
 	@Override
 	protected int findPos(T x) {
-		return 0;
+
+		int offset = 0;
+		int currentPos = myhash(x);
+
+		while (continueProbing(currentPos,x)){
+			currentPos = myhash(x) + f(offset++);
+			if (currentPos >= capacity())
+				currentPos -= capacity();
+		}
+
+		return currentPos;
+	}
+
+	private int f(int i){
+		return i;
 	}
 
 }

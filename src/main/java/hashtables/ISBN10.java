@@ -1,5 +1,7 @@
 package hashtables;
 
+import java.util.Arrays;
+
 public class ISBN10 {
 
 	private char[] isbn;
@@ -25,5 +27,28 @@ public class ISBN10 {
 	@Override
 	public String toString() {
 		return new String(isbn);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) return true;
+		if (object == null || getClass() != object.getClass()) return false;
+
+		ISBN10 isbn10 = (ISBN10) object;
+
+        return Arrays.equals(isbn, isbn10.isbn);
+    }
+
+	//Created with help from PROG2 slides
+	@Override
+	public int hashCode() {
+
+		int hash = 13;
+
+		for(char c : isbn){
+			hash = hash * 37 + (int) c;
+		}
+
+		return hash;
 	}
 }
