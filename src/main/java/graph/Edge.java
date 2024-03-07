@@ -61,6 +61,6 @@ public class Edge <T> {
     //Generated via Wizard
     @Override
     public int hashCode() {
-        return Objects.hash(nodeOne, nodeTwo, cost);
+        return Objects.hash(nodeOne, nodeTwo);
     }
 }
