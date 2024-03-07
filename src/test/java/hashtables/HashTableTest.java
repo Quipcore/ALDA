@@ -38,6 +38,43 @@ public class HashTableTest {
 		}
 	}
 
+	@Test
+	public void testInsertRemoveOrder(){
+
+		class TestClass{
+
+			String a;
+
+			public TestClass(String val){
+				a = val;
+			}
+			@Override
+			public boolean equals(Object obj) {
+				return super.equals(obj);
+			}
+
+			@Override
+			public int hashCode() {
+				return 1;
+			}
+		}
+
+		ProbingHashTable<TestClass> hashTable = new LinearProbingHashTable<>();
+
+		TestClass a = new TestClass("Hello");
+		TestClass b = new TestClass("World");
+
+
+		hashTable.insert(a);
+		hashTable.insert(b);
+
+		assertTrue(hashTable.contains(b));
+
+		hashTable.remove(a);
+
+		assertTrue(hashTable.contains(b));
+	}
+
 
 	@Test
 	public void testFunctionalityOfQuadraticProbingHashTable() {
