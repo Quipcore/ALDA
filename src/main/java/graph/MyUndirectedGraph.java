@@ -7,6 +7,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T>{
 
     private final Map<T, Set<Edge<T>>> adjacencies = new HashMap<>();
 
+    private int edgeAmount = 0;
 
     @Override
     public int getNumberOfNodes() {
@@ -15,7 +16,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T>{
 
     @Override
     public int getNumberOfEdges() {
-        return (int) getFlatMap(this).count();
+        return edgeAmount;
     }
 
     /**
@@ -37,6 +38,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T>{
         }
 
         adjacencies.put(newNode,null);
+        edgeAmount++;
 
         return true;
     }
@@ -195,14 +197,21 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T>{
     }
 
     // Replaced by method below
-    private Edge<T> getLowestEdgeAway(MyUndirectedGraph<T> minimumTree) {
-        List<Edge<T>> edges = getFlatMap(this).sorted(Comparator.comparingInt(Edge::getCost)).toList();
-        for(Edge<T> edge : edges){
-            if(minimumTree.containsPartOfEdge(edge)){
-                return edge;
-            }
-        }
-        return null;
+//    private Edge<T> getLowestEdgeAway(MyUndirectedGraph<T> minimumTree) {
+//        List<Edge<T>> edges = getFlatMap(this).sorted(Comparator.comparingInt(Edge::getCost)).toList();
+//        for(Edge<T> edge : edges){
+//            if(minimumTree.containsPartOfEdge(edge)){
+//                return edge;
+//            }
+//        }
+//        return null;
+//    }
+
+    private Edge<T> getLowestEdgeAway(MyUndirectedGraph<T> minimumTree){
+        return getFlatMap(this)
+                .filter(minimumTree::containsPartOfEdge)
+                .min(Comparator.comparingInt(Edge::getCost))
+                .orElse(null);
     }
 
     // Can be replaced by XOR operation
