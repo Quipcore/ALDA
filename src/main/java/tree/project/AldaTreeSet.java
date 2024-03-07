@@ -1,5 +1,7 @@
 package tree.project;
 
+import tree.BinarySearchTree;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -21,6 +23,13 @@ import java.util.TreeSet;
 
 
 public class AldaTreeSet<E> implements Set<E> {
+
+     TopDownRedBlackTree<E> bst;
+
+     public AldaTreeSet(){
+         bst = new TopDownRedBlackTree<>();
+     }
+
 
     @Override
     public int size() {
