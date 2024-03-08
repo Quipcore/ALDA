@@ -1,0 +1,2 @@
+*.txt filter=lfs diff=lfs merge=lfs -text
+src/main/resources/graph/project/bacon/moviedata.txt filter=lfs diff=lfs merge=lfs -text

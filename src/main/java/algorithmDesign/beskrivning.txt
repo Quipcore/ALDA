@@ -1,22 +1,3 @@
-Jag har valt att implementera huffman's algortim
-
-Meddelande headern består av klassen huffmanTree vars konstruktor tar in meddelandet och skapar träd strukturen baserat på den
-
-Trädet är ett binärt träd vars noder håller två viktiga fält ett tecken som är null alla noder utom löven och dess vikt,
- vilket är antalet gånger dess summan av dess barn eller antalet gånger dess tecken dycker upp i input strängen
-
-Trädet skapas genom att
-    1. Skapa en map med tecken och hur många gånger dem dyker upp i strängen
-    2. För varje tecken skapa noder som läggs in i en prioritetskö och sorteras baserat på noden vikt,
-        vilket är antalet gånger som ett tecken dycker upp i texten
-    3. Ta dem två elementen längsfram i listan och sätt ihop dem till med en ny föräldrar nod som får vikten av summan av dess barn
-    4. När kön har endast ett element så har vi träd strukturen
-Anledning att använda en priokö är för att vi alltid får de två noderna som har lägst vikt längst fram och därmed låter vi datastrukturen jobba åt oss bakom kulliserna
-
-För att koda en sträng så gör man det ett tecken i taget eftersom det blir en enkelt rekursion att implementera.
-Detta görs rekursivt genom att ge null värden till de grenar som inte har tecknet i antingen sig själv eller sina barn
- och returnerar den vägen som inte är null till roten som sedan ges till användare av metoden
-
-För att avkoda bit-strängen som skapas vid kodningen så tar vi hela strängen eftersom vi inte på för hand vet hur strängen är delad.
-Att avkoda är enkelt gjort med en loop som går ner i trädet beroende på vilket tecken som dycker upp i bitsträngen och
- när den träffar en nod som innehåller ett tecken dvs ett löv så plockar vi ut det datat och ställer om noden vi kollar till roten
+version https://git-lfs.github.com/spec/v1
+oid sha256:01bf1e15579352c764cb445e7b126e4276296100a5bba28725812b051c384108
+size 1855

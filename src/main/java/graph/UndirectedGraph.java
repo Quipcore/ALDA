@@ -106,4 +106,6 @@ public interface UndirectedGraph<T> {
      * @return en graf som representerar ett minimalt spånnande träd.
      */
     UndirectedGraph<T> minimumSpanningTree();
+    UndirectedGraph<T> minimumSpanningTree(T startNode);
+    boolean contains(T node);
 }
