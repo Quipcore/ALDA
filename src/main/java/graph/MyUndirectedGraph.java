@@ -30,6 +30,9 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
         return true;
     }
 
+    public Set<T> getNodes() {
+        return adjacencies.keySet();
+    }
 
     @Override
     public boolean connect(T nodeOne, T nodeTwo, int cost) {
@@ -61,10 +64,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
             return null;
         }
 
-        return edges.stream()
-                .filter(edge -> edge.isBetween(nodeOne, nodeTwo))
-                .findFirst()
-                .orElse(null);
+        return edges.stream().filter(edge -> edge.isBetween(nodeOne, nodeTwo)).findFirst().orElse(null);
     }
 
     @Override
@@ -107,12 +107,6 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
         return new ArrayList<>();
     }
 
-
-    //Modified after Wikipedia Pseudocode
-    //Bredden först:
-    //Explored i BFS är onödig, skulle kunna använda nycklarna från parentNode.
-    //
-    //BFS bör inte använda en prioritetskö, det är Dijkstra's som kräver en sådan.
     @Override
     public List<T> breadthFirstSearch(T start, T end) {
         if (start.equals(end)) {
@@ -154,45 +148,10 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
         return path.reversed();
     }
 
-    //TODO: Comments
-    //Minimalt uppspännande träd:
-    //En prioritetskö skulle kunna använts för att hitta den billigaste kanten i minimumSpanningTree.
     @Override
     public UndirectedGraph<T> minimumSpanningTree() {
         T startNode = adjacencies.keySet().iterator().next();
         return minimumSpanningTree(startNode);
-
-//        MyUndirectedGraph<T> minimumTree = new MyUndirectedGraph<>();
-//        Set<T> nodes = new HashSet<>(adjacencies.keySet());
-//
-//        T startNode = nodes.iterator().next();
-//        nodes.remove(startNode);
-//        minimumTree.add(startNode);
-//
-//
-//        PriorityQueue<Edge<T>> edgeQueue = new PriorityQueue<>(Comparator.comparingInt(Edge::getCost));
-//        edgeQueue.addAll(adjacencies.get(startNode));
-//
-//        while (!nodes.isEmpty()) {
-//            Edge<T> lowestEdgeAway = edgeQueue.poll();
-//
-//            if (lowestEdgeAway == null) {
-//                throw new IllegalStateException("Could not find lowest edge away from tree, graph might be incomplete");
-//            }
-//
-//            T treeNode = minimumTree.contains(lowestEdgeAway.getNodeOne()) ? lowestEdgeAway.getNodeOne() : lowestEdgeAway.getNodeTwo();
-//            T awayNode = lowestEdgeAway.getNeighbour(treeNode);
-//
-//            if (nodes.contains(awayNode)) {
-//                minimumTree.add(awayNode);
-//                minimumTree.connect(treeNode, awayNode, lowestEdgeAway.getCost());
-//                nodes.remove(awayNode);
-//
-//                edgeQueue.addAll(adjacencies.get(awayNode));
-//            }
-//        }
-//
-//        return minimumTree;
     }
 
     @Override
@@ -211,7 +170,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
             Edge<T> lowestEdgeAway = edgeQueue.poll();
 
             if (lowestEdgeAway == null) {
-                if(edgeQueue.isEmpty()){
+                if (edgeQueue.isEmpty()) {
                     return minimumTree;
                 }
                 throw new IllegalStateException("Could not find lowest edge away from tree, graph might be incomplete");
@@ -230,51 +189,6 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
         }
 
         return minimumTree;
-    }
-
-//    //Prims algorithm
-//    @Override
-//    public UndirectedGraph<T> minimumSpanningTree() {
-//
-//        MyUndirectedGraph<T> minimumTree = new MyUndirectedGraph<>();
-//        Set<T> nodes = new HashSet<>(adjacencies.keySet());
-//
-//        //Add first node arbitrarily
-//        T startNode = nodes.iterator().next();
-//        nodes.remove(startNode);
-//        minimumTree.add(startNode);
-//
-//        while(!nodes.isEmpty()){
-//            Edge<T> lowestEdgeAway = getLowestEdgeAway(minimumTree);
-//
-//            if(lowestEdgeAway == null){
-//                throw new IllegalStateException("Could not find lowest edge away from tree, graph might be incomplete");
-//            }
-//
-//            T treeNode = minimumTree.contains(lowestEdgeAway.getNodeOne()) ? lowestEdgeAway.getNodeOne() : lowestEdgeAway.getNodeTwo();
-//            T awayNode = lowestEdgeAway.getNeighbour(treeNode);
-//
-//            minimumTree.add(awayNode);
-//            minimumTree.connect(treeNode,awayNode,lowestEdgeAway.getCost());
-//            nodes.remove(awayNode);
-//        }
-//
-//        return minimumTree;
-//    }
-//
-//
-//    //TODO: FIX
-//    private Edge<T> getLowestEdgeAway(MyUndirectedGraph<T> minimumTree){
-//        return getFlatMap(this)
-//                .filter(minimumTree::containsPartOfEdge)
-//                .min(Comparator.comparingInt(Edge::getCost))
-//                .orElse(null);
-//    }
-
-    // Can be replaced by XOR operation
-    private boolean containsPartOfEdge(Edge<T> edge) {
-        return adjacencies.containsKey(edge.getNodeOne()) && !adjacencies.containsKey(edge.getNodeTwo())
-                || adjacencies.containsKey(edge.getNodeTwo()) && !adjacencies.containsKey(edge.getNodeOne());
     }
 
 

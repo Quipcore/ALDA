@@ -1,75 +1,49 @@
 package graph.project.bacon;
 
-import graph.UndirectedGraph;
-
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
-    private static BaconNode kevinBacon = new BaconNode("<a>Bacon, Kevin (I)");
-    private static BaconNode alanAlda = new BaconNode("<a>Alda, Alan");
-    private static BaconNode rots = new BaconNode("<t>Star Wars: Episode III - Revenge of the Sith (2005)");
+    private static final BaconNode ALAN_ALDA = new BaconNode("<a>Alda, Alan");
+    private static final BaconNode ROTS = new BaconNode("<t>Star Wars: Episode III - Revenge of the Sith (2005)");
+    private static final BaconNode ICELANDER = new BaconNode("<a>Þórðardóttir, María");
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    private static final String PATH = "moviedata.txt";
+    private static final Path PATH_TO_DATA;
 
-        long timer = System.currentTimeMillis();
-        String path = "moviedata.txt";
-        List<String> nodes = Files.lines(getPathOf(path)).toList();
-        long finished = System.currentTimeMillis();
-        long diff = finished - timer;
-        System.out.println("Collected lines: " + diff + "ms");
-
-        timer = System.currentTimeMillis();
-        UndirectedGraph<BaconNode> graph = generateGraph(nodes);
-        finished = System.currentTimeMillis();
-        diff = finished - timer;
-        System.out.println("Created graph: " + diff + "ms");
-        System.out.println("Nodes in graph = " + graph.getNumberOfNodes());
-        System.out.println("Edges in graph = " + graph.getNumberOfEdges());
-
-        timer = System.currentTimeMillis();
-        List<BaconNode> graphBFSPath = graph.breadthFirstSearch(kevinBacon, kevinBacon);
-        finished = System.currentTimeMillis();
-        diff = finished - timer;
-        System.out.println("Found path using BFS in graph: " + diff + "ms");
-        System.out.println("Graph path length = " + (graphBFSPath.size()-1));
-        System.out.println(graphBFSPath);
-
-        timer = System.currentTimeMillis();
-        List<BaconNode> graphDFSPath = graph.depthFirstSearch(kevinBacon, kevinBacon);
-        finished = System.currentTimeMillis();
-        diff = finished - timer;
-        System.out.println("Found path using DFS in graph: " + diff + "ms");
-        System.out.println("Graph path length = " + (graphDFSPath.size()-1));
-        System.out.println(graphDFSPath);
-
-    }
-
-    private static UndirectedGraph<BaconNode> generateGraph(List<String> nodes) {
-        UndirectedGraph<BaconNode> graph = new BaconGraph<>();
-        BaconNode actor = new BaconNode("");
-        for (String line : nodes) {
-            if (line.startsWith("<a>")) {
-                actor = new BaconNode(line);
-                graph.add(actor);
-            } else {
-                BaconNode node = new BaconNode(line);
-                if (!graph.contains(node)) {
-                    graph.add(node);
-                }
-                graph.connect(actor, node, 1);
-            }
+    static {
+        try {
+            PATH_TO_DATA = Path.of(BaconGraph.class.getResource(PATH).toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
-        return graph;
     }
 
-    private static Path getPathOf(String path) throws URISyntaxException {
-        URI uri = Main.class.getResource(path).toURI();
-        return Path.of(uri);
+    public static void main(String[] args) throws IOException, ParseException {
+
+        System.out.println("Generating graph...");
+        BaconGraph baconGraph = new BaconGraph(PATH_TO_DATA);
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the name of an actor or Tv-Show/Movie: ");
+        String item = scanner.nextLine();
+        BaconNode baconNode = new BaconNode(item);
+
+        List<BaconNode> path = baconGraph.getBaconNumber(baconNode);
+
+        System.out.println("\"" + item + "\" bacon number is " + (path.size() - 1) + " with the path:");
+        print(path);
+    }
+
+    private static <T> void print(List<T> items) {
+        for (T item : items) {
+            System.out.println(item);
+        }
+        System.out.println();
     }
 }
