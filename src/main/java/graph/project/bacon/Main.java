@@ -33,19 +33,19 @@ public class Main {
         System.out.println("Edges in graph = " + graph.getNumberOfEdges());
 
         timer = System.currentTimeMillis();
-        List<BaconNode> graphBFSPath = graph.breadthFirstSearch(rots, kevinBacon);
+        List<BaconNode> graphBFSPath = graph.breadthFirstSearch(kevinBacon, kevinBacon);
         finished = System.currentTimeMillis();
         diff = finished - timer;
         System.out.println("Found path using BFS in graph: " + diff + "ms");
-        System.out.println("Graph path length = " + graphBFSPath.size());
+        System.out.println("Graph path length = " + (graphBFSPath.size()-1));
         System.out.println(graphBFSPath);
 
         timer = System.currentTimeMillis();
-        List<BaconNode> graphDFSPath = graph.depthFirstSearch(rots, kevinBacon);
+        List<BaconNode> graphDFSPath = graph.depthFirstSearch(kevinBacon, kevinBacon);
         finished = System.currentTimeMillis();
         diff = finished - timer;
-        System.out.println("Found path using BFS in graph: " + diff + "ms");
-        System.out.println("Graph path length = " + graphDFSPath.size());
+        System.out.println("Found path using DFS in graph: " + diff + "ms");
+        System.out.println("Graph path length = " + (graphDFSPath.size()-1));
         System.out.println(graphDFSPath);
 
     }
