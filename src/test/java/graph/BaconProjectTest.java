@@ -34,7 +34,7 @@ public class BaconProjectTest {
     }
 
     public List<BaconNode> getPath(BaconGraph bacon, BaconNode node){
-        return bacon.getBaconNumber(node);
+        return bacon.findPathBetween(BaconGraph.KEVIN_BACON, node);
     }
 
     @Test

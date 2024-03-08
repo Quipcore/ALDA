@@ -34,10 +34,11 @@ public class Main {
         String item = scanner.nextLine();
         BaconNode baconNode = new BaconNode(item);
 
-        List<BaconNode> path = baconGraph.getBaconNumber(baconNode);
+        List<BaconNode> path = baconGraph.findPathBetween(BaconGraph.KEVIN_BACON,baconNode);
 
         System.out.println("\"" + item + "\" bacon number is " + (path.size() - 1) + " with the path:");
         print(path);
+
     }
 
     private static <T> void print(List<T> items) {

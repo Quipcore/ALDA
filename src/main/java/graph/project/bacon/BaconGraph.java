@@ -2,6 +2,7 @@ package graph.project.bacon;
 
 import graph.Edge;
 import graph.MyUndirectedGraph;
+import graph.UndirectedGraph;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,31 +10,81 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.*;
 
+/**
+ * Represent an undirected graph of connected actors/actresses, movies and tv-shows.
+ */
 public class BaconGraph extends MyUndirectedGraph<BaconNode> {
+    /**
+     * Represent Kevin Bacon
+     */
+    public static final BaconNode KEVIN_BACON = new BaconNode("<a>Bacon, Kevin (I)");
 
-    private static final BaconNode KEVIN_BACON = new BaconNode("<a>Bacon, Kevin (I)");
-
-    public BaconGraph(Path path) throws ParseException, IOException {
-        List<String> nodeNames = Files.readAllLines(path);
+    /**
+     * Reads all lines from a file and from that generates a graph of actors, movies, and tv-shows. Excepted structure
+     * of data file is first a line that starts with a &lt;a&gt; tag followed by the name of actor or actress, that line
+     * is then followed by any amount of new lines starting with &lt;t&gt; tag and has the name of whatever the
+     * actor/actress was featured in. The file should repeat this pattern until end of file
+     * @param filePath the path to a file
+     * @throws ParseException if a line in the file doesn't start with either a "&lt;a&gt;" or "&lt;t&gt;" tag
+     * @throws IOException if an I/O error occurs reading from file. For more information, see {@link java.nio.file.Files#readAllLines(java.nio.file.Path)}
+     */
+    public BaconGraph(Path filePath) throws ParseException, IOException {
+        List<String> nodeNames = Files.readAllLines(filePath);
         generateGraph(nodeNames);
     }
 
     /**
-     * Equivalent to calling findPathBetween(new BaconNode("&lt;a&gt;Bacon, Kevin (I)"), node)
+     * Calculates the inclusive (non-actor nodes) Bacon number for a given node in the graph. This is equivalent to the length of the shortest path
+     * between Kevin Bacon and the node because the Bacon number is defined as the minimum number of links between
+     * Kevin Bacon and the specified node.
+     * For more information, see <a href="https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon">Six Degrees of Kevin Bacon</a>.
      *
-     * @param node
-     * @return
-     * @throws NoSuchElementException
+     * @param node The node for which to calculate the Bacon number.
+     * @return The Bacon number of the specified node, including non-actor nodes.
+     * @throws NoSuchElementException If the specified node is not part of the graph.
      */
-    public List<BaconNode> getBaconNumber(BaconNode node) throws NoSuchElementException {
+    public int getInclusiveBaconNumber(BaconNode node) throws NoSuchElementException {
 
         if (!contains(node)) {
             throw new NoSuchElementException("Graph doesn't contain the node" + node);
         }
 
-        return findPathBetween(KEVIN_BACON, node);
+        return findPathBetween(KEVIN_BACON, node).size() -1;
     }
 
+    /**
+     * Calculates the exclusive (non-actor nodes) Bacon number for a given node in the graph. This is equivalent to the length of the shortest path
+     * between Kevin Bacon and the node because the Bacon number is defined as the minimum number of links between
+     * Kevin Bacon and the specified node.
+     * For more information, see <a href="https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon">Six Degrees of Kevin Bacon</a>.
+     *
+     * @param node The node for which to calculate the Bacon number.
+     * @return The bacon number of the specified node using exclusively actors/actresses
+     * @throws IllegalArgumentException if the node is not representing an actor
+     * @throws NoSuchElementException if the node is not a vertex in the graph
+     */
+    public int getExclusiveBaconNumber(BaconNode node) throws IllegalArgumentException,NoSuchElementException{
+        if(!contains(node)){
+            throw new NoSuchElementException("Graph doesn't contain the node" + node);
+        }
+
+        if(!node.toString().startsWith("<a>")){
+            throw new IllegalArgumentException("Node  "+node+" is not an actor");
+        }
+
+        List<BaconNode> path = findPathBetween(KEVIN_BACON,node);
+        path.removeIf(vertex -> vertex.toString().startsWith("<t>"));
+        return path.size() -1;
+    }
+
+    /**
+     * Preforms a search on the graph to find the shortest path between two nodes.
+     * To find the bacon number of one the parameters replace the other parameters with {@link graph.project.bacon.BaconGraph#KEVIN_BACON}
+     * @param start the node to be used as start for path search. This node will be put as the first element in the returning path list
+     * @param end the node to be used as stop for path search. This node will be put as the last element in the returning path list
+     * @return an ordered list with the shortest path between the start and end nodes. Method returns an empty list if there is no path between start and end
+     * @throws NoSuchElementException if either one of the parameters is not a vertex of this graph
+     */
     public List<BaconNode> findPathBetween(BaconNode start, BaconNode end) throws NoSuchElementException {
 
         if (!contains(start)) {
@@ -66,7 +117,6 @@ public class BaconGraph extends MyUndirectedGraph<BaconNode> {
         }
     }
 
-    //Overwritten due the need of using iterative approach due to limited JVM stack size
     @Override
     public List<BaconNode> depthFirstSearch(BaconNode start, BaconNode end) throws NoSuchElementException{
 
@@ -105,10 +155,17 @@ public class BaconGraph extends MyUndirectedGraph<BaconNode> {
         return new LinkedList<>();
     }
 
-    public boolean isValidPath(List<BaconNode> nodes) throws IllegalArgumentException, NoSuchElementException {
+    /**
+     * Checks whether there exists a path in graph in that is equivalent to the path given as argument
+     * @param nodes a list of nodes representing a path where the first node of the list is the start of the path and last node is the last node in the path
+     * @return a boolean value of whether the list is a valid path from first to last element
+     * @throws NullPointerException if the list of nodes passed as arguments is null
+     * @throws NoSuchElementException if one of the nodes in the list is not a part of this graph
+     */
+    public boolean isValidPath(List<BaconNode> nodes) throws NullPointerException, NoSuchElementException {
 
         if (nodes == null) {
-            throw new IllegalArgumentException("List of nodes is NULL");
+            throw new NullPointerException("List of nodes is NULL");
         }
 
         BaconNode firstNode = nodes.getFirst();
@@ -141,4 +198,27 @@ public class BaconGraph extends MyUndirectedGraph<BaconNode> {
         return false;
     }
 
+    /**
+     * Returns a new graph that represent a minimum spanning tree for the graph.
+     * @param startNode the node that should be used as the root of the resulting tree
+     * @return a graph that represents a minimum spanning tree.
+     * @deprecated this method is being deprecated due to taking too much heap space. Consider avoiding this when low JVM heap space available
+     */
+    @Override
+    @Deprecated
+    public UndirectedGraph<BaconNode> minimumSpanningTree(BaconNode startNode) {
+        return super.minimumSpanningTree(startNode);
+    }
+
+
+    /**
+     * Returns a new graph that represent a minimum spanning tree for the graph.
+     * @return a graph that represents a minimum spanning tree.
+     * @deprecated this method is being deprecated due to taking too much heap space. Consider avoiding this when low JVM heap space available
+     */
+    @Override
+    @Deprecated
+    public UndirectedGraph<BaconNode> minimumSpanningTree(){
+        return super.minimumSpanningTree();
+    }
 }

@@ -85,7 +85,7 @@ public interface UndirectedGraph<T> {
     List<T> depthFirstSearch(T start, T end);
 
     /**
-     * Gär en bredden-först-sökning efter en väg mellan två noder.
+     * Gör en bredden-först-sökning efter en väg mellan två noder.
      *
      * Observera att denna metod inte använder sig av viktinformationen. Ni ska
      * alltså inte implementera Dijkstra eller A*.
