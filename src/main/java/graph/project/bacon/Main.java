@@ -24,13 +24,21 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void main(String[] args) throws IOException, ParseException, InterruptedException {
+        Main main = new Main();
+        main.run();
+    }
 
-        System.out.println("Generating graph...");
+    private void run() throws ParseException, IOException, InterruptedException {
+        PrintThread printThread = new PrintThread();
+        printThread.start();
         BaconGraph baconGraph = new BaconGraph(PATH_TO_DATA);
+        printThread.interrupt();
+        printThread.join();
+
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the name of an actor or Tv-Show/Movie: ");
+        System.out.print("Enter the name of an actor or Tv-Show/Movie formatted in accordance with datafile: ");
         String item = scanner.nextLine();
         BaconNode baconNode = new BaconNode(item);
 
@@ -38,10 +46,9 @@ public class Main {
 
         System.out.println("\"" + item + "\" bacon number is " + (path.size() - 1) + " with the path:");
         print(path);
-
     }
 
-    private static <T> void print(List<T> items) {
+    private <T> void print(List<T> items) {
         for (T item : items) {
             System.out.println(item);
         }
