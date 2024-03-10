@@ -40,10 +40,10 @@ public class Main {
         for (mPosition childMPosition : mPosition.getChildren()) {
             double eval = minimax(childMPosition, depth - 1, alpha, beta, false);
             maxEval = Math.max(maxEval, eval);
-//            alpha = Math.max(alpha, eval);
-//            if (beta <= alpha) {
-//                break;
-//            }
+            alpha = Math.max(alpha, eval);
+            if (beta <= alpha) {
+                break;
+            }
         }
         return maxEval;
     }
@@ -53,10 +53,10 @@ public class Main {
         for (mPosition childMPosition : mPosition.getChildren()) {
             double eval = minimax(childMPosition, depth - 1, alpha, beta, true);
             minEval = Math.min(minEval, eval);
-//            beta = Math.min(beta, eval);
-//            if (beta <= alpha) {
-//                break;
-//            }
+            beta = Math.min(beta, eval);
+            if (beta <= alpha) {
+                break;
+            }
         }
         return minEval;
     }

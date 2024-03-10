@@ -1,6 +1,6 @@
 package algorithmDesign.project;
 
-enum Player {
+public enum Player {
     WHITE,
     BLACK
 }
