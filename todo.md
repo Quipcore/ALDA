@@ -10,8 +10,10 @@
  * T9 - Avancerade datastrukturer
 
 # Projekt
- * ~~P1 - Grafer~~
- * P2 - Linjära datastrukturer
+ * ~~P1 - Grafer (VG)~~
+   * ~~Bacon number~~
+ * P2 - Algoritmdesignteknik (VG)
+   * Minimax med Alfa-Beta-Pruning
 
 # Dokumentation
  * ~~D - Grafer~~
