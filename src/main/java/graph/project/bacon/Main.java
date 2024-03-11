@@ -26,7 +26,6 @@ public class Main {
     private static final BaconNode CALEB_MCLAUGHLIN = new BaconNode("<a>McLaughlin, Caleb (II)"); //Through Obama
     private static final BaconNode SELENA_GOMEZ = new BaconNode("<a>Gomez, Selena");
     private static final BaconNode POKEMON_ASH = new BaconNode("<a>Taylor, Veronica (I)");
-
     private static final BaconNode BAKED_PUMPKIN = new BaconNode("<t>The Baked Pumpkin (2010)"); //Disconnected from Kevin Bacon
 
     private static final String PATH = "moviedata.txt";
@@ -53,14 +52,18 @@ public class Main {
         printThread.join();
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the name of an actor or Tv-Show/Movie formatted in accordance with datafile: ");
-        String item = scanner.nextLine();
-        BaconNode baconNode = new BaconNode(item);
 
-        List<BaconNode> path = baconGraph.findPathBetween(BaconGraph.KEVIN_BACON,baconNode);
+        while (true) {
+            System.out.print("Enter the name of an actor or Tv-Show/Movie formatted in accordance with datafile: ");
+            String item = scanner.nextLine();
+            BaconNode baconNode = new BaconNode(item);
 
-        System.out.println("\"" + item + "\" bacon number is " + (path.size() - 1) + " with the path:");
-        print(path);
+            List<BaconNode> path = baconGraph.findPathBetween(BaconGraph.KEVIN_BACON, baconNode);
+
+            System.out.println("\"" + item + "\" bacon number is " + (path.size() - 1) + " with the path:");
+            print(path);
+            System.out.println();
+        }
     }
 
     private <T> void print(List<T> items) {
