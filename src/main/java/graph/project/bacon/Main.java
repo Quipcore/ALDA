@@ -1,11 +1,17 @@
 package graph.project.bacon;
 
+import graph.MyUndirectedGraph;
+import graph.UndirectedGraph;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+
+import static graph.project.bacon.BaconGraph.KEVIN_BACON;
 
 public class Main {
 
@@ -20,6 +26,8 @@ public class Main {
     private static final BaconNode CALEB_MCLAUGHLIN = new BaconNode("<a>McLaughlin, Caleb (II)"); //Through Obama
     private static final BaconNode SELENA_GOMEZ = new BaconNode("<a>Gomez, Selena");
     private static final BaconNode POKEMON_ASH = new BaconNode("<a>Taylor, Veronica (I)");
+
+    private static final BaconNode BAKED_PUMPKIN = new BaconNode("<t>The Baked Pumpkin (2010)"); //Disconnected from Kevin Bacon
 
     private static final String PATH = "moviedata.txt";
     private static final Path PATH_TO_DATA;
@@ -44,20 +52,15 @@ public class Main {
         printThread.interrupt();
         printThread.join();
 
-        List<BaconNode> path = baconGraph.findPathBetween(BaconGraph.KEVIN_BACON,POKEMON_ASH);
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the name of an actor or Tv-Show/Movie formatted in accordance with datafile: ");
+        String item = scanner.nextLine();
+        BaconNode baconNode = new BaconNode(item);
 
-        System.out.println("\"" + ALAN_ALDA + "\" bacon number is " + (path.size() - 1) + " with the path:");
+        List<BaconNode> path = baconGraph.findPathBetween(BaconGraph.KEVIN_BACON,baconNode);
+
+        System.out.println("\"" + item + "\" bacon number is " + (path.size() - 1) + " with the path:");
         print(path);
-
-//        Scanner scanner = new Scanner(System.in);
-//        System.out.print("Enter the name of an actor or Tv-Show/Movie formatted in accordance with datafile: ");
-//        String item = scanner.nextLine();
-//        BaconNode baconNode = new BaconNode(item);
-//
-//        List<BaconNode> path = baconGraph.findPathBetween(BaconGraph.KEVIN_BACON,baconNode);
-//
-//        System.out.println("\"" + item + "\" bacon number is " + (path.size() - 1) + " with the path:");
-//        print(path);
     }
 
     private <T> void print(List<T> items) {
