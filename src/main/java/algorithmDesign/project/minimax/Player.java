@@ -1,4 +1,4 @@
-package algorithmDesign.project;
+package algorithmDesign.project.minimax;
 
 public enum Player {
     WHITE,

@@ -1,4 +1,4 @@
-package algorithmDesign;
+package algorithmDesign.huffman;
 
 public class HuffmanCoder {
 

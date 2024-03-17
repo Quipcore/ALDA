@@ -1,4 +1,4 @@
-package algorithmDesign;
+package algorithmDesign.huffman;
 public class HuffmanNode implements Comparable<HuffmanNode>{
     private final char data; // data == null if data == 0 == '\0' == NULL_CHAR
     private final int weight;

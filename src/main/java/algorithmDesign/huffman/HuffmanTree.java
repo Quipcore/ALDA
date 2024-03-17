@@ -1,4 +1,4 @@
-package algorithmDesign;
+package algorithmDesign.huffman;
 
 import java.util.Comparator;
 import java.util.HashMap;
