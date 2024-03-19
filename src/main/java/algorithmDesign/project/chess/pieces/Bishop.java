@@ -2,6 +2,7 @@ package algorithmDesign.project.chess.pieces;
 
 import algorithmDesign.project.chess.Board;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bishop implements Piece {
@@ -17,8 +18,8 @@ public class Bishop implements Piece {
     }
 
     @Override
-    public List<String> getValidMoves(Board board, int fromX, int fromY) {
-        return null;
+    public List<String> getValidMoves(Board board, int rank, int file) {
+        return new ArrayList<>();
     }
 
     @Override

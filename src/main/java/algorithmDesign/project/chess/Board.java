@@ -11,7 +11,7 @@ public class Board {
     private String fen;
     private boolean whiteToMove;
     private String castlingRights;
-    private String enPassentSquare;
+    private String enPassantSquare;
     private int halfMoveClock;
     private int fullMoveNumber;
 
@@ -26,22 +26,28 @@ public class Board {
         this.whiteToMove = parts[1].equals("w");
 
         this.castlingRights = parts[2];
-        this.enPassentSquare = parts[3];
+        this.enPassantSquare = parts[3];
 
         this.halfMoveClock = Integer.parseInt(parts[4]);
         this.fullMoveNumber = Integer.parseInt(parts[5]);
     }
 
+    public static String convertPositionToNotation(int rank, int file){
+        char fileChar = (char)('a' + file);
+        int rankInt = rank + 1;
+        return "" + fileChar + rankInt;
+    }
+
     private void fillBoard(String part) {
         String[] ranks = part.split("/");
-        for(int i = 0; i < ranks.length; i++){//Ranks
-            String rank = ranks[i];
+        for(int rankIndex = 0; rankIndex < ranks.length; rankIndex++){
+            String rank = ranks[rankIndex];
             int file = 0;
             for(char c : rank.toCharArray()){
                 if(Character.isDigit(c)){
                     file += Character.getNumericValue(c);
                 } else {
-                    board[i][file] = PieceFactory.createPiece(String.valueOf(c));
+                    board[rankIndex][file] = PieceFactory.createPiece(String.valueOf(c));
                     file++;
                 }
             }
@@ -82,6 +88,10 @@ public class Board {
             for(int file = 0; file < board[rank].length; file++){
                 Piece piece = board[rank][file];
 
+                if(piece == null){
+                    continue;
+                }
+
                 if(whiteToMove && piece.isWhite()){
                     List<Board> boards = getPossibleMovesFromPiece(piece, rank, file);
                     possibleBoardStates.addAll(boards);
@@ -94,7 +104,7 @@ public class Board {
         }
 
 
-        return possibleBoardStates;
+        return possibleBoardStates.stream().distinct().toList();
     }
 
     private List<Board> getPossibleMovesFromPiece(Piece piece, int rank, int file) {
@@ -127,23 +137,23 @@ public class Board {
 
     private void recalculateFen() {
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < 8; i++){
+        for(int rank = 0; rank < board.length; rank++){
             int empty = 0;
-            for(int j = 0; j < 8; j++){
-                if(board[i][j] == null){
+            for(int file = 0; file < board[rank].length; file++){
+                if(board[rank][file] == null){
                     empty++;
                 } else {
                     if(empty != 0){
                         sb.append(empty);
                         empty = 0;
                     }
-                    sb.append(board[i][j].getNotation());
+                    sb.append(board[rank][file].getNotation());
                 }
             }
             if(empty != 0){
                 sb.append(empty);
             }
-            if(i != 7){
+            if(rank != 7){
                 sb.append("/");
             }
         }
@@ -152,7 +162,7 @@ public class Board {
         sb.append(" ");
         sb.append(castlingRights);
         sb.append(" ");
-        sb.append(enPassentSquare);
+        sb.append(enPassantSquare);
         sb.append(" ");
         sb.append(halfMoveClock);
         sb.append(" ");
@@ -189,5 +199,9 @@ public class Board {
     @Override
     public int hashCode() {
         return 31 * (fen != null ? fen.hashCode() : 0);
+    }
+
+    public Piece getPieceAt(int rank, int file) {
+        return board[rank][file];
     }
 }

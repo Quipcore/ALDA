@@ -2,6 +2,7 @@ package algorithmDesign.project.chess.pieces;
 
 import algorithmDesign.project.chess.Board;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pawn implements Piece{
@@ -18,8 +19,13 @@ public class Pawn implements Piece{
     }
 
     @Override
-    public List<String> getValidMoves(Board board, int fromX, int fromY) {
-        return null;
+    public List<String> getValidMoves(Board board, int rank, int file) {
+
+        if(rank == 1){
+
+        }
+
+        return new ArrayList<>();
     }
 
 
