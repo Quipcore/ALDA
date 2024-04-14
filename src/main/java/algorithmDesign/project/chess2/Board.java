@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Board {
 
-    private static final String START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    public static final String START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     private static final int[][] numSquaresToEdge = preComputeMoveData();
     private static final int[] directionOffsets = {
             8, -8, 1, -1, 7, -7, 9, -9
@@ -16,6 +16,11 @@ public class Board {
     private final int[] board;
 
     private final int colorToMove;
+
+    private final boolean whiteKingSideCastlingRights;
+    private final boolean whiteQueenSideCastlingRights;
+    private final boolean blackKingSideCastlingRights;
+    private final boolean blackQueenSideCastlingRights;
 
 
     public Board() {
@@ -33,6 +38,13 @@ public class Board {
         this.colorToMove = splits[1].equals("w") ? Piece.WHITE : Piece.BLACK;
 
         this.enPassant = splits[3];
+
+        String castlingRights = splits[2];
+        this.whiteKingSideCastlingRights = castlingRights.contains("K");
+        this.whiteQueenSideCastlingRights = castlingRights.contains("Q");
+        this.blackKingSideCastlingRights = castlingRights.contains("k");
+        this.blackQueenSideCastlingRights = castlingRights.contains("q");
+
     }
 
     private static int[][] preComputeMoveData() {
@@ -155,12 +167,12 @@ public class Board {
         }
 
         //Pawn double push
-        if(board[targetSquare + forwardDirection] == Piece.EMPTY){
+        if (board[targetSquare + forwardDirection] == Piece.EMPTY) {
             if (forwardDirection > 0 && inRange(startSquare, 8, 16)) {
                 moves.add(new Move(startSquare, targetSquare + forwardDirection, pieceSymbol));
             }
 
-            if (forwardDirection < 0 && inRange(startSquare,48,56)) {
+            if (forwardDirection < 0 && inRange(startSquare, 48, 56)) {
                 moves.add(new Move(startSquare, targetSquare + forwardDirection, pieceSymbol));
             }
         }
@@ -170,8 +182,8 @@ public class Board {
                 startSquare + forwardDirection - 1,
                 startSquare + forwardDirection + 1
         };
-        for(int sideWaysCaptureOffset : sideWaysCaptureOffsets){
-            if(isValidSquare(sideWaysCaptureOffset, friendlyColor) && Piece.IsColor(board[sideWaysCaptureOffset], enemyColor)){
+        for (int sideWaysCaptureOffset : sideWaysCaptureOffsets) {
+            if (isValidSquare(sideWaysCaptureOffset, friendlyColor) && Piece.IsColor(board[sideWaysCaptureOffset], enemyColor)) {
                 moves.add(new Move(startSquare, sideWaysCaptureOffset, pieceSymbol));
             }
         }
@@ -181,7 +193,7 @@ public class Board {
                 startSquare - 1,
                 startSquare + 1
         };
-        for(int enPassantDirection : enPassantCaptureOffsets){
+        for (int enPassantDirection : enPassantCaptureOffsets) {
             int enPassantMoveSquare = enPassantDirection + forwardDirection;
             if (isValidSquare(enPassantMoveSquare, friendlyColor) && Piece.IsColor(board[enPassantDirection], enemyColor)) {
                 if (enPassantCapture(enPassantMoveSquare)) {
@@ -250,7 +262,61 @@ public class Board {
                 moves.add(new Move(startSquare, targetSquare, Piece.PEICE_SYMBOL.get(piece & 0b00_111)));
             }
         }
+
+        if (canCastleKingSide(friendlyColor)) {
+            moves.add(new Move(startSquare, startSquare + 2, 'C'));
+        }
+
+        if (canCastleQueenSide(friendlyColor)) {
+            moves.add(new Move(startSquare, startSquare - 2, 'C'));
+        }
+
+
         return moves;
+    }
+
+    private boolean canCastleQueenSide(int friendlyColor) {
+
+        boolean hasCastlingRights = friendlyColor == Piece.WHITE ? whiteQueenSideCastlingRights : blackQueenSideCastlingRights;
+        if (!hasCastlingRights) {
+            return false;
+        }
+
+        //Check if the squares between the king and rook are empty
+        int[] squaresToCheck = {
+                friendlyColor == Piece.WHITE ? 1 : 57,
+                friendlyColor == Piece.WHITE ? 2 : 58,
+                friendlyColor == Piece.WHITE ? 3 : 59
+        };
+
+        for (int square : squaresToCheck) {
+            if (board[square] != Piece.EMPTY) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean canCastleKingSide(int friendlyColor) {
+        boolean hasCastlingRights = friendlyColor == Piece.WHITE ? whiteKingSideCastlingRights : blackKingSideCastlingRights;
+
+        if(!hasCastlingRights){
+            return false;
+        }
+
+        //Check if the squares between the king and rook are empty
+        int[] squaresToCheck = {
+                friendlyColor == Piece.WHITE ? 5 : 61,
+                friendlyColor == Piece.WHITE ? 6 : 62
+        };
+
+        for (int square : squaresToCheck) {
+            if (board[square] != Piece.EMPTY) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 

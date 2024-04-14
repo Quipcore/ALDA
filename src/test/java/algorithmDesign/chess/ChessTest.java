@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ChessTest {
 
-    private static final String START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    private static final String START_FEN = Board.START_FEN;
 
     @Test
     public void testInitialMoveAmountMatches20() {
@@ -20,7 +20,7 @@ public class ChessTest {
     }
 
     @Test
-    public void testDefaultConstructor() {
+    public void testDefaultConstructorGivesSTARTFENasToString() {
         Board board = new Board();
         Assertions.assertTrue(board.toString().contains(START_FEN));
     }
@@ -35,7 +35,7 @@ public class ChessTest {
     public void testMoveAmountOnDefaultStart() {
         Board board = new Board();
 
-        List<algorithmDesign.project.chess2.Move> moves = board.generateMoves();
+        List<Move> moves = board.generateMoves();
         assertEquals(20, moves.size());
     }
 
@@ -115,4 +115,43 @@ public class ChessTest {
         assertEquals(2, moves.size());
     }
 
+    @Test
+    public void testFullWhiteCastlingRights(){
+        String fen = "8/8/8/8/8/8/8/4K3 w KQkq - 0 1";
+        Board board = new Board(fen);
+        List<Move> moves = board.generateMoves();
+        assertEquals(7, moves.size());
+    }
+
+    @Test
+    public void testFullRightCastlingRights(){
+        String fen = "4k3/8/8/8/8/8/8/8 b KQkq - 0 1";
+        Board board = new Board(fen);
+        List<Move> moves = board.generateMoves();
+        assertEquals(7, moves.size());
+    }
+
+    @Test
+    public void testWhiteKingSideCastlingRight(){
+        String fen = "8/8/8/8/8/8/8/4K3 w Kkq - 0 1";
+        Board board = new Board(fen);
+        List<Move> moves = board.generateMoves();
+        assertEquals(6, moves.size());
+    }
+
+    @Test
+    public void testWhiteQueenSideCastlingRight(){
+        String fen = "8/8/8/8/8/8/8/4K3 w Qkq - 0 1";
+        Board board = new Board(fen);
+        List<Move> moves = board.generateMoves();
+        assertEquals(6, moves.size());
+    }
+
+    @Test
+    public void testLackOfCastlingRights(){
+        String fen = "8/8/8/8/8/8/8/4K3 w - - 0 1";
+        Board board = new Board(fen);
+        List<Move> moves = board.generateMoves();
+        assertEquals(5, moves.size());
+    }
 }
