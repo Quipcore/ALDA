@@ -45,6 +45,7 @@ public class Rook implements Piece{
     }
 
     private boolean isValidMove(Board board, int rank, int file, int rankOffset, int fileOffset) {
+        return false;
     }
 
     @Override
