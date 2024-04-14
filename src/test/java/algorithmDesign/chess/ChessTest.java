@@ -154,4 +154,10 @@ public class ChessTest {
         List<Move> moves = board.generateMoves();
         assertEquals(5, moves.size());
     }
+
+    @Test
+    public void testPrintingBoard(){
+        Board board = new Board();
+        board.printBoard();
+    }
 }

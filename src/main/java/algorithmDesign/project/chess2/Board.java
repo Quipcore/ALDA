@@ -264,11 +264,11 @@ public class Board {
         }
 
         if (canCastleKingSide(friendlyColor)) {
-            moves.add(new Move(startSquare, startSquare + 2, 'C'));
+            moves.add(new Move(startSquare, startSquare + 2, "O-O"));
         }
 
         if (canCastleQueenSide(friendlyColor)) {
-            moves.add(new Move(startSquare, startSquare - 2, 'C'));
+            moves.add(new Move(startSquare, startSquare - 2, "O-O-O"));
         }
 
 
@@ -345,23 +345,23 @@ public class Board {
     public void printBoard() {
         for (int i = 0; i < 64; i++) {
             if (i % 8 == 0) {
-                System.out.println("  +---+---+---+---+---+---+---+---+");
+                System.out.println("   +---+---+---+---+---+---+---+---+");
             }
             if (i % 8 == 0) {
-                System.out.print((8 - i / 8) + " | ");
+                System.out.print((8 - i / 8) + "  | ");
             }
 
             int color = (board[i] & 0b11_000);
-            char peice = Piece.PEICE_SYMBOL.get(board[i] & 0b00_111);
-            peice = color == Piece.WHITE ? Character.toUpperCase(peice) : Character.toLowerCase(peice);
+            char piece = Piece.PEICE_SYMBOL.get(board[i] & 0b00_111);
+            piece = color == Piece.WHITE ? Character.toUpperCase(piece) : Character.toLowerCase(piece);
 
-            System.out.print(peice + " | ");
+            System.out.print(piece + " | ");
             if (i % 8 == 7) {
                 System.out.println();
             }
         }
-        System.out.println("  +---+---+---+---+---+---+---+---+");
-        System.out.println("    A   B   C   D   E   F   G   H  ");
+        System.out.println("   +---+---+---+---+---+---+---+---+");
+        System.out.println("     A   B   C   D   E   F   G   H  ");
         System.out.println("FEN: " + currentFen);
     }
 
