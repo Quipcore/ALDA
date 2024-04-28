@@ -45,7 +45,12 @@ public class Board {
         this.blackKingSideCastlingRights = castlingRights.contains("k");
         this.blackQueenSideCastlingRights = castlingRights.contains("q");
 
+
     }
+
+    /** Computes the number of squares to the edge of the board in each direction. Where first index is the square and the second index is the direction
+     * @return A 2D array with the number of squares to the edge of the board in each direction
+     */
 
     private static int[][] preComputeMoveData() {
 
@@ -284,9 +289,9 @@ public class Board {
 
         //Check if the squares between the king and rook are empty
         int[] squaresToCheck = {
-                friendlyColor == Piece.WHITE ? 1 : 57,
-                friendlyColor == Piece.WHITE ? 2 : 58,
-                friendlyColor == Piece.WHITE ? 3 : 59
+                friendlyColor == Piece.WHITE ? 1 : 57, //b1, b8
+                friendlyColor == Piece.WHITE ? 2 : 58, //c1, c8
+                friendlyColor == Piece.WHITE ? 3 : 59  //d1, d8
         };
 
         for (int square : squaresToCheck) {

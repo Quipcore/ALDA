@@ -6,8 +6,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChessTest {
 
@@ -159,5 +161,15 @@ public class ChessTest {
     public void testPrintingBoard(){
         Board board = new Board();
         board.printBoard();
+    }
+
+    @Test
+    public void testPieceBlockingQueenSideCastling(){
+        String fen = "8/8/8/1q6/8/8/8/R3K2R w KQkq - 0 1";
+        Board board = new Board(fen);
+        board.printBoard();
+        List<Move> moves = board.generateMoves();
+        boolean doesntContains = moves.stream().noneMatch(move -> move.toString().equalsIgnoreCase("O-O-O"));
+        assertTrue(doesntContains);
     }
 }
