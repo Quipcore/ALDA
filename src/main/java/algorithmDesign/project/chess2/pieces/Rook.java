@@ -5,6 +5,7 @@ import algorithmDesign.project.chess2.Piece;
 import algorithmDesign.project.chess2.Move;
 
 import java.awt.*;
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class Rook implements Piece {
     }
 
     @Override
-    public List<Move> getMoves(Piece[] board, int startSquare) {
+    public List<Move> getMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
         List<Move> moves = new ArrayList<>();
 
         Color enemyColor = color.equals(Color.WHITE) ? Color.BLACK : Color.WHITE;

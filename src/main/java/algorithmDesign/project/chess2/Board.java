@@ -17,34 +17,33 @@ public class Board {
     };
 
     public final Map<Character, Piece> pieceMap;
-
     private final String currentFen;
-    private final String enPassant;
-
-    private final Piece[] pieceBoard;
-
+    private final String enPassantSquare;
+    private final String castlingRights;
+    private final Piece[] board;
     private final Color colorToMoveColor;
+    private final int fullMoveClock;
+
+    private final List<Integer> visibleSquares;
 
 
     public Board() {
         this(START_FEN);
     }
 
-
     public Board(String fen) {
         String[] splits = fen.split(" ");
-        this.enPassant = splits[3];
-
+        this.enPassantSquare = splits[3];
         pieceMap = new HashMap<>() {
             {
-                put('P', new Pawn(Color.WHITE, enPassant));
+                put('P', new Pawn(Color.WHITE, enPassantSquare));
                 put('N', new Knight(Color.WHITE));
                 put('B', new Bishop(Color.WHITE));
                 put('R', new Rook(Color.WHITE));
                 put('Q', new Queen(Color.WHITE));
                 put('K', new King(Color.WHITE,fen));
 
-                put('p', new Pawn(Color.BLACK, enPassant));
+                put('p', new Pawn(Color.BLACK, enPassantSquare));
                 put('n', new Knight(Color.BLACK));
                 put('b', new Bishop(Color.BLACK));
                 put('r', new Rook(Color.BLACK));
@@ -54,11 +53,15 @@ public class Board {
         };
 
         this.currentFen = fen;
-        pieceBoard = new Piece[64];
+        board = new Piece[64];
 
-        setupBoard(this.pieceBoard, splits[0]);
+        setupBoard(this.board, splits[0]);
+        this.visibleSquares = generateVisibleSquares();
 
         this.colorToMoveColor = fen.contains("w") ? Color.WHITE : Color.BLACK;
+        this.castlingRights = splits[2];
+        this.fullMoveClock = Integer.parseInt(splits[5]);
+
     }
 
 
@@ -111,15 +114,159 @@ public class Board {
         }
     }
 
+    public List<Integer> getVisibleSquares(){
+        return visibleSquares;
+    }
+
+    private List<Integer> generateVisibleSquares(){
+        List<Integer> visibleSquares = new ArrayList<>();
+        for(int i = 0; i < board.length; i++){
+            Piece piece = board[i];
+            if(piece != null && !piece.getColor().equals(colorToMoveColor)){
+                List<Move> moves = piece.getMoves(board,visibleSquares,i);
+                moves.stream().map(Move::getTo).forEach(visibleSquares::add);
+            }
+        }
+        return visibleSquares.stream().distinct().toList();
+    }
+
     public List<Move> generateMoves() {
         List<Move> moves = new ArrayList<>();
-        for (int i = 0; i < pieceBoard.length; i++) {
-            Piece piece = pieceBoard[i];
+        for (int i = 0; i < board.length; i++) {
+            Piece piece = board[i];
             if (piece != null && piece.getColor().equals(colorToMoveColor)) {
-                moves.addAll(piece.getMoves(pieceBoard, i));
+                moves.addAll(piece.getMoves(board,visibleSquares,i));
             }
         }
         return moves.stream().distinct().toList();
+    }
+
+    public Board makeMove(Move move) {
+        Piece[] newBoard = board.clone();
+
+        if(move.isKingSideCastle()){
+            //Move the king
+            int kingFrom = colorToMoveColor.equals(Color.WHITE) ? 60 : 4;
+            int kingTo = colorToMoveColor.equals(Color.WHITE) ? 62 : 6;
+            newBoard[kingTo] = newBoard[kingFrom];
+            newBoard[kingFrom] = null;
+
+            //Move the rook
+            int rookFrom = colorToMoveColor.equals(Color.WHITE) ? 63 : 7;
+            int rookTo = colorToMoveColor.equals(Color.WHITE) ? 61 : 5;
+            newBoard[rookTo] = newBoard[rookFrom];
+            newBoard[rookFrom] = null;
+
+        } else if (move.isQueenSideCastle()){
+            //Move the king
+            int kingFrom = colorToMoveColor.equals(Color.WHITE) ? 60 : 4;
+            int kingTo = colorToMoveColor.equals(Color.WHITE) ? 58 : 2;
+            newBoard[kingTo] = newBoard[kingFrom];
+            newBoard[kingFrom] = null;
+
+            //Move the rook
+            int rookFrom = colorToMoveColor.equals(Color.WHITE) ? 56 : 0;
+            int rookTo = colorToMoveColor.equals(Color.WHITE) ? 59 : 3;
+            newBoard[rookTo] = newBoard[rookFrom];
+            newBoard[rookFrom] = null;
+        } else if (move.isEnPassant()){
+            newBoard[move.getTo()] = newBoard[move.getFrom()];
+            newBoard[move.getFrom()] = null;
+            newBoard[move.getTo() + (colorToMoveColor.equals(Color.WHITE) ? -8 : 8)] = null;
+        } else {
+            newBoard[move.getTo()] = newBoard[move.getFrom()];
+            newBoard[move.getFrom()] = null;
+        }
+        String fen = getFenFromBoard(newBoard, move);
+        return new Board(fen);
+    }
+
+    private String getFenFromBoard(Piece[] board, Move latestMove) {
+        StringBuilder fen = new StringBuilder();
+        int emptySquares = 0;
+
+        for (int i = 0; i < 64; i++) {
+            if (i % 8 == 0 && i != 0) { // at the start of each rank except the first one
+                if (emptySquares != 0) {
+                    fen.append(emptySquares);
+                    emptySquares = 0;
+                }
+                fen.append('/');
+            }
+
+            if (board[i] == null) {
+                emptySquares++;
+            } else {
+                if (emptySquares != 0) {
+                    fen.append(emptySquares);
+                    emptySquares = 0;
+                }
+                fen.append(board[i].getSymbol());
+            }
+        }
+
+        if (emptySquares != 0) {
+            fen.append(emptySquares);
+        }
+
+        fen.append(" ");
+
+        String colorToMove = colorToMoveColor.equals(Color.WHITE) ? "b" : "w";
+        fen.append(colorToMove);
+
+        fen.append(" ");
+
+        String castlingRights = getCastlingRightsFromMove(latestMove);
+        fen.append(castlingRights);
+
+        fen.append(" ");
+
+        if(latestMove.isPawnDoublePush()){
+            char startFile = (char) ('a' + latestMove.getTo() % 8);
+            int startRank = 8 - latestMove.getTo() / 8;
+            String toSquare = "" + startFile + startRank;
+            fen.append(toSquare);
+        } else {
+            fen.append("-");
+        }
+
+        fen.append(" ");
+
+        fen.append("0");
+
+        fen.append(" ");
+
+        int fullMoveClock = this.fullMoveClock;
+        if(colorToMove.equalsIgnoreCase("w")){
+            fullMoveClock++;
+        }
+        fen.append(fullMoveClock);
+        return fen.toString();
+    }
+
+    private String getCastlingRightsFromMove(Move latestMove) {
+        String castlingRights = this.castlingRights;
+        if(latestMove.isKingMove() || latestMove.isKingSideCastle() || latestMove.isQueenSideCastle()){
+            String castlingToRemove = colorToMoveColor.equals(Color.WHITE) ? "KQ" : "kq";
+            castlingRights = castlingRights.replace(castlingToRemove, "");
+        }
+        else if(latestMove.isRookMove()){
+            int rookStart = latestMove.getFrom();
+            if(rookStart == 0 && board[rookStart].getSymbol() == (colorToMoveColor.equals(Color.WHITE) ? 'R' : 'r')){
+                castlingRights = castlingRights.replace("q","");
+            } else if(rookStart == 7 && board[rookStart].getSymbol() == (colorToMoveColor.equals(Color.WHITE) ? 'R' : 'r')){
+                castlingRights = castlingRights.replace("k","");
+            } else if(rookStart == 56 && board[rookStart].getSymbol() == (colorToMoveColor.equals(Color.WHITE) ? 'R' : 'r')){
+                castlingRights = castlingRights.replace("Q","");
+            } else if(rookStart == 63 && board[rookStart].getSymbol() == (colorToMoveColor.equals(Color.WHITE) ? 'R' : 'r')){
+                castlingRights = castlingRights.replace("K","");
+            }
+        }
+
+        if(castlingRights.isBlank()){
+            castlingRights = "-";
+        }
+        return castlingRights;
     }
 
 
@@ -154,7 +301,7 @@ public class Board {
                 System.out.print((8 - i / 8) + "  | ");
             }
 
-            char piece = pieceBoard[i] == null ? ' ' : pieceBoard[i].getSymbol();
+            char piece = board[i] == null ? ' ' : board[i].getSymbol();
 
             System.out.print(piece + " | ");
             if (i % 8 == 7) {

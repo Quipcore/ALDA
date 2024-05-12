@@ -33,10 +33,10 @@ public class Queen implements Piece {
     }
 
     @Override
-    public List<Move> getMoves(Piece[] board, int startSquare) {
+    public List<Move> getMoves(Piece[] board,List<Integer> visibleSquares, int startSquare) {
         List<Move> moves = new ArrayList<>();
-        moves.addAll(rook.getMoves(board, startSquare));
-        moves.addAll(bishop.getMoves(board, startSquare));
+        moves.addAll(rook.getMoves(board,visibleSquares, startSquare));
+        moves.addAll(bishop.getMoves(board,visibleSquares, startSquare));
         return moves;
     }
 }

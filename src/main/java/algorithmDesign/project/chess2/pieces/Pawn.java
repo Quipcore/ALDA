@@ -31,7 +31,7 @@ public class Pawn implements Piece {
     }
 
     @Override
-    public List<Move> getMoves(Piece[] board, int startSquare) {
+    public List<Move> getMoves(Piece[] board,List<Integer> visibleSquares, int startSquare) {
         List<Move> moves = new ArrayList<>();
 
         Color enemyColor = color.equals(Color.WHITE) ? Color.BLACK : Color.WHITE;
@@ -39,12 +39,18 @@ public class Pawn implements Piece {
 
         //Pawn push
         int targetSquare = startSquare + forwardDirection;
+
+        if(targetSquare < 8){
+            int i = 1;
+        }
+
+
         if (board[targetSquare] == null) {
             moves.add(new Move(startSquare, targetSquare, symbol));
         }
 
         //Pawn double push
-        if (board[targetSquare + forwardDirection] == null) {
+        if (board[targetSquare] == null && board[targetSquare + forwardDirection] == null) {
             if (forwardDirection > 0 && inRange(startSquare, 8, 16)) {
                 moves.add(new Move(startSquare, targetSquare + forwardDirection, symbol));
             }
@@ -74,7 +80,7 @@ public class Pawn implements Piece {
         for (int enPassantCaptureSquare : enPassantCaptureOffsets) {
             if (inRange(enPassantCaptureSquare + forwardDirection, 0, 64)) {
                 if (enPassantCapture(enPassantCaptureSquare)) {
-                    moves.add(new Move(startSquare, enPassantCaptureSquare + forwardDirection, symbol));
+                    moves.add(new Move(startSquare, enPassantCaptureSquare + forwardDirection, "enPassant"));
                 }
             }
         }

@@ -40,9 +40,8 @@ public class King implements Piece {
     }
 
     @Override
-    public List<Move> getMoves(Piece[] board, int startSquare) {
+    public List<Move> getMoves(Piece[] board,List<Integer> visibleSquares, int startSquare) {
         List<Move> moves = new ArrayList<>();
-        Color friendlyColor = this.color;
 
         for (int directionOffset : DIRECTION_OFFSETS) {
             int targetSquare = startSquare + directionOffset;
@@ -51,11 +50,13 @@ public class King implements Piece {
             }
         }
 
-        if (canCastleKingSide(board,friendlyColor)) {
+        boolean hasCastlingRights = color.equals(Color.WHITE) ? whiteKingSideCastlingRights : blackKingSideCastlingRights;
+        if (canCastle(board,visibleSquares,hasCastlingRights)) {
             moves.add(new Move(startSquare, startSquare + 2, "O-O"));
         }
 
-        if (canCastleQueenSide(board,friendlyColor)) {
+        hasCastlingRights = color.equals(Color.WHITE) ? whiteQueenSideCastlingRights : blackQueenSideCastlingRights;
+        if (canCastle(board,visibleSquares,hasCastlingRights)) {
             moves.add(new Move(startSquare, startSquare - 2, "O-O-O"));
         }
 
@@ -63,43 +64,19 @@ public class King implements Piece {
         return moves;
     }
 
-    private boolean canCastleQueenSide(Piece[] board, Color friendlyColor) {
-
-        boolean hasCastlingRights = friendlyColor.equals(Color.WHITE) ? whiteQueenSideCastlingRights : blackQueenSideCastlingRights;
+    private boolean canCastle(Piece[] board, List<Integer> visibleSquares, boolean hasCastlingRights) {
         if (!hasCastlingRights) {
             return false;
         }
 
         //Check if the squares between the king and rook are empty
         int[] squaresToCheck = {
-                friendlyColor.equals(Color.WHITE) ? 1 : 57, //b1, b8
-                friendlyColor.equals(Color.WHITE)  ? 2 : 58, //c1, c8
-                friendlyColor.equals(Color.WHITE)  ? 3 : 59  //d1, d8
+                color.equals(Color.WHITE) ? 5 : 61,
+                color.equals(Color.WHITE) ? 6 : 62
         };
 
         for (int square : squaresToCheck) {
-            if (board[square] != null) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean canCastleKingSide(Piece board[], Color friendlyColor) {
-        boolean hasCastlingRights = friendlyColor.equals(Color.WHITE) ? whiteKingSideCastlingRights : blackKingSideCastlingRights;
-
-        if (!hasCastlingRights) {
-            return false;
-        }
-
-        //Check if the squares between the king and rook are empty
-        int[] squaresToCheck = {
-                friendlyColor.equals(Color.WHITE) ? 5 : 61,
-                friendlyColor.equals(Color.WHITE) ? 6 : 62
-        };
-
-        for (int square : squaresToCheck) {
-            if (board[square] != null) {
+            if (board[square] != null || visibleSquares.contains(square) ) {
                 return false;
             }
         }

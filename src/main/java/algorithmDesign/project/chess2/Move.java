@@ -22,6 +22,18 @@ public class Move {
         this.piece = piece;
     }
 
+    public boolean isKingSideCastle(){
+        return piece.equalsIgnoreCase("o-o");
+    }
+
+    public boolean isQueenSideCastle(){
+        return piece.equalsIgnoreCase("o-o-o");
+    }
+
+    public boolean isEnPassant() {
+        return piece.equalsIgnoreCase("ePassant");
+    }
+
     public String getPiece() {
         return piece;
     }
@@ -30,7 +42,9 @@ public class Move {
     public String toString() {
 
         if(piece.equalsIgnoreCase("o-o-o") || piece.equalsIgnoreCase("o-o")){
-            return piece;
+            return "Move{" +
+                    "piece=" + piece +
+                    "}";
         }
 
         int startFile = 'a' + startIndex % 8;
@@ -48,5 +62,26 @@ public class Move {
                 "endSquare=" + (char) endFile + (endRank) + ", " +
                 "piece=" + piece +
                 '}';
+    }
+
+    public int getTo() {
+        return endIndex;
+    }
+
+    public int getFrom() {
+        return startIndex;
+    }
+
+
+    public boolean isPawnDoublePush() {
+        return piece.equalsIgnoreCase("p") && Math.abs(startIndex - endIndex) == 16;
+    }
+
+    public boolean isRookMove() {
+        return piece.equalsIgnoreCase("r");
+    }
+
+    public boolean isKingMove() {
+        return piece.equalsIgnoreCase("k");
     }
 }
