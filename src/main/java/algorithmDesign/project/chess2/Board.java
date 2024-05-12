@@ -141,8 +141,8 @@ public class Board {
         for(int i = 0; i < board.length; i++){
             Piece piece = board[i];
             if(piece != null && !piece.getColor().equals(colorToMove)){
-                List<Move> moves = piece.getVisibleSquares(board, i);//.getMoves(board,visibleSquares,i);
-                moves.stream().map(Move::getTo).forEach(visibleSquares::add);
+                List<Integer> moves = piece.getVisibleSquares(board, i);//.getMoves(board,visibleSquares,i);
+                visibleSquares.addAll(moves);//moves.stream().map(Move::getTo).forEach(visibleSquares::add);
             }
         }
         return visibleSquares.stream().distinct().toList();

@@ -83,8 +83,15 @@ public class King implements Piece {
     }
 
     @Override
-    public List<Move> getVisibleSquares(Piece[] board, int startSquare) {
-        return List.of();
+    public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {
+        List<Integer> visibleSquares = new ArrayList<>();
+        for (int directionOffset : DIRECTION_OFFSETS) {
+            int targetSquare = startSquare + directionOffset;
+            if (isValidSquare(targetSquare, board, visibleSquares)) {
+                visibleSquares.add(targetSquare);
+            }
+        }
+        return visibleSquares;
     }
 
     private boolean canCastle(Piece[] board, List<Integer> visibleSquares,int[] squaresToCheck, boolean hasCastlingRights) {

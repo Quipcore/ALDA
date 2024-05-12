@@ -60,8 +60,30 @@ public class Knight implements Piece {
     }
 
     @Override
-    public List<Move> getVisibleSquares(Piece[] board, int startSquare) {
-        return List.of();
+    public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {
+        List<Integer> visibleSquares = new ArrayList<>();
+        int[] possibleSquares = {
+                startSquare + 17, //Increases in rank by 2 and file by 1
+                startSquare + 15, //Increases in rank by 2 and file by -1
+                startSquare + 10, //Increases in rank by 1 and file by 2
+                startSquare + 6, //Increases in rank by -1 and file by 2
+                startSquare - 17, //Decreases in rank by 2 and file by 1
+                startSquare - 15, //Decreases in rank by 2 and file by -1
+                startSquare - 10, //Decreases in rank by 1 and file by 2
+                startSquare - 6 //Decreases in rank by -1 and file by 2
+        };
+
+        for (int targetSquare : possibleSquares) {
+            if (isValidSquare(board, targetSquare)) {
+
+                //Make sure the knight is not moving an extra rank because of the board wrapping
+                if (Math.abs(targetSquare % 8 - startSquare % 8) > 2) {
+                    continue;
+                }
+                visibleSquares.add(targetSquare);
+            }
+        }
+        return visibleSquares;
     }
 
     private boolean isValidSquare(Piece[] board, int square) {

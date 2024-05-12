@@ -89,7 +89,10 @@ public class Pawn implements Piece {
     }
 
     @Override
-    public List<Move> getVisibleSquares(Piece[] board, int startSquare) {
+    public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {
+        List<Integer> visibleSquares = new ArrayList<>();
+        int forwardDirection = color.equals(Color.WHITE) ? -8 : 8;
+
         return List.of();
     }
 

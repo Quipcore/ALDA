@@ -60,7 +60,7 @@ public class Bishop implements Piece {
     }
 
     @Override
-    public List<Move> getVisibleSquares(Piece[] board, int startSquare) {
+    public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {
         return List.of();
     }
 }

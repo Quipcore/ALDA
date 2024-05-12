@@ -41,7 +41,10 @@ public class Queen implements Piece {
     }
 
     @Override
-    public List<Move> getVisibleSquares(Piece[] board, int startSquare) {
-        return List.of();
+    public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {
+        List<Integer> visibleSquares = new ArrayList<>();
+        visibleSquares.addAll(rook.getVisibleSquares(board, startSquare));
+        visibleSquares.addAll(bishop.getVisibleSquares(board, startSquare));
+        return visibleSquares;
     }
 }
