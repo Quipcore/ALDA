@@ -7,4 +7,5 @@ public interface Piece {
     Color getColor();
     char getSymbol();
     List<Move> getMoves(Piece[] board, List<Integer> visibleSquares,int startSquare);
+    List<Move> getVisibleSquares(Piece[] board, int startSquare);
 }

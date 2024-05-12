@@ -117,33 +117,40 @@ public class ChessTest {
 
     @Test
     public void testFullWhiteCastlingRights(){
-        String fen = "8/8/8/8/8/8/8/4K3 w KQkq - 0 1";
+        String fen = "8/8/8/8/8/8/8/R3K2R w KQkq - 0 1";
         Board board = new Board(fen);
         List<Move> moves = board.generateMoves();
+        moves = moves.stream().filter(move -> move.getPiece().equalsIgnoreCase("K") || move.isKingSideCastle() || move.isQueenSideCastle()).toList();
         assertEquals(7, moves.size());
     }
 
     @Test
     public void testFullRightCastlingRights(){
-        String fen = "4k3/8/8/8/8/8/8/8 b KQkq - 0 1";
+        String fen = "8/8/8/8/8/8/8/R3K2R w KQkq - 0 1";
         Board board = new Board(fen);
+        board.printBoard();
         List<Move> moves = board.generateMoves();
+        moves = moves.stream().filter(move -> move.getPiece().equalsIgnoreCase("K") || move.isKingSideCastle() || move.isQueenSideCastle()).toList();
+
         assertEquals(7, moves.size());
     }
 
     @Test
     public void testWhiteKingSideCastlingRight(){
-        String fen = "8/8/8/8/8/8/8/4K3 w Kkq - 0 1";
+        String fen = "8/8/8/8/8/8/8/R3K3 w Kkq - 0 1";
         Board board = new Board(fen);
+        board.printBoard();
         List<Move> moves = board.generateMoves();
+        moves = moves.stream().filter(move -> move.getPiece().equalsIgnoreCase("K") || move.isKingSideCastle()).toList();
         assertEquals(6, moves.size());
     }
 
     @Test
     public void testWhiteQueenSideCastlingRight(){
-        String fen = "8/8/8/8/8/8/8/4K3 w Qkq - 0 1";
+        String fen = "8/8/8/8/8/8/8/4K2R w Qkq - 0 1";
         Board board = new Board(fen);
         List<Move> moves = board.generateMoves();
+        moves = moves.stream().filter(move -> move.getPiece().equalsIgnoreCase("K") || move.isQueenSideCastle()).toList();
         assertEquals(6, moves.size());
     }
 

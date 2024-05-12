@@ -16,7 +16,7 @@ public class Queen implements Piece {
 
     public Queen(Color color) {
         this.color = color;
-        this.symbol = color == Color.WHITE ? 'P' : 'p';
+        this.symbol = color == Color.WHITE ? 'Q' : 'q';
 
         this.rook = new Rook(color);
         this.bishop = new Bishop(color);
@@ -38,5 +38,10 @@ public class Queen implements Piece {
         moves.addAll(rook.getMoves(board,visibleSquares, startSquare));
         moves.addAll(bishop.getMoves(board,visibleSquares, startSquare));
         return moves;
+    }
+
+    @Override
+    public List<Move> getVisibleSquares(Piece[] board, int startSquare) {
+        return List.of();
     }
 }

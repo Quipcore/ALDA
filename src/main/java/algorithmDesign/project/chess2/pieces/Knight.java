@@ -59,6 +59,11 @@ public class Knight implements Piece {
         return moves;
     }
 
+    @Override
+    public List<Move> getVisibleSquares(Piece[] board, int startSquare) {
+        return List.of();
+    }
+
     private boolean isValidSquare(Piece[] board, int square) {
         if(square < 0 || square >= 64) {
             return false;

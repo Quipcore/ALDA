@@ -62,4 +62,9 @@ public class Rook implements Piece {
 
         return moves;
     }
+
+    @Override
+    public List<Move> getVisibleSquares(Piece[] board, int startSquare) {
+        return List.of();
+    }
 }

@@ -1,7 +1,7 @@
 package algorithmDesign.project.chess2.pieces;
 
-import algorithmDesign.project.chess2.Piece;
 import algorithmDesign.project.chess2.Move;
+import algorithmDesign.project.chess2.Piece;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -31,26 +31,26 @@ public class Pawn implements Piece {
     }
 
     @Override
-    public List<Move> getMoves(Piece[] board,List<Integer> visibleSquares, int startSquare) {
+    public List<Move> getMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
         List<Move> moves = new ArrayList<>();
 
         Color enemyColor = color.equals(Color.WHITE) ? Color.BLACK : Color.WHITE;
         int forwardDirection = color.equals(Color.WHITE) ? -8 : 8;
 
-        //Pawn push
+
         int targetSquare = startSquare + forwardDirection;
 
-        if(targetSquare < 8){
-            int i = 1;
+        if (targetSquare < 0 || targetSquare >= 64) {
+            return moves;
         }
 
-
+        //Pawn push
         if (board[targetSquare] == null) {
             moves.add(new Move(startSquare, targetSquare, symbol));
         }
 
-        //Pawn double push
-        if (board[targetSquare] == null && board[targetSquare + forwardDirection] == null) {
+        int forwardPosition = startSquare + forwardDirection;
+        if (inRange(forwardPosition, 0, 64) && board[targetSquare] == null && board[forwardPosition] == null) {
             if (forwardDirection > 0 && inRange(startSquare, 8, 16)) {
                 moves.add(new Move(startSquare, targetSquare + forwardDirection, symbol));
             }
@@ -86,6 +86,11 @@ public class Pawn implements Piece {
         }
 
         return moves;
+    }
+
+    @Override
+    public List<Move> getVisibleSquares(Piece[] board, int startSquare) {
+        return List.of();
     }
 
     private boolean inRange(int startSquare, int lowerLimit, int upperLimit) {
