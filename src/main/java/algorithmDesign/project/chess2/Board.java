@@ -63,9 +63,6 @@ public class Board {
     }
 
     public boolean isGameOver(){
-
-
-
         return generateMoves().isEmpty();
     }
 
