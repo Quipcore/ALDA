@@ -65,6 +65,29 @@ public class Rook implements Piece {
 
     @Override
     public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {
-        return List.of();
+        List<Integer> visibleSquares = new ArrayList<>();
+
+        int startDirIndex = 0;
+        int endDirIndex = 4;
+
+        for (int directionIndex = startDirIndex; directionIndex < endDirIndex; directionIndex++) {
+            for (int n = 0; n < Board.NUM_SQUARES_TO_EDGE[startSquare][directionIndex]; n++) {
+
+                int targetSquare = startSquare + Board.DIRECTION_OFFSETS[directionIndex] * (n + 1);
+                if (targetSquare < 0 || targetSquare >= 64) {
+                    break;
+                }
+
+                Piece piece = board[targetSquare];
+
+                visibleSquares.add(targetSquare);
+
+                if(piece != null){
+                    break;
+                }
+            }
+        }
+
+        return visibleSquares;
     }
 }

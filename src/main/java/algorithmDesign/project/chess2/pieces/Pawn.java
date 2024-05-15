@@ -90,10 +90,37 @@ public class Pawn implements Piece {
 
     @Override
     public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {
+
         List<Integer> visibleSquares = new ArrayList<>();
+        Color enemyColor = color.equals(Color.WHITE) ? Color.BLACK : Color.WHITE;
         int forwardDirection = color.equals(Color.WHITE) ? -8 : 8;
 
-        return List.of();
+        int[] sideWaysCaptureOffsets = {
+                startSquare + forwardDirection - 1,
+                startSquare + forwardDirection + 1
+        };
+
+        for (int sideWaysCaptureSquare : sideWaysCaptureOffsets) {
+            if (inRange(sideWaysCaptureSquare, 0, 64)) {
+                visibleSquares.add(sideWaysCaptureSquare);
+            }
+        }
+
+        int[] enPassantCaptureOffsets = {
+                startSquare - 1,
+                startSquare + 1
+        };
+
+        for (int enPassantCaptureSquare : enPassantCaptureOffsets) {
+            if (inRange(enPassantCaptureSquare + forwardDirection, 0, 64)) {
+                if (enPassantCapture(enPassantCaptureSquare)) {
+                    visibleSquares.add(enPassantCaptureSquare + forwardDirection);
+                }
+            }
+        }
+
+        return visibleSquares;
+
     }
 
     private boolean inRange(int startSquare, int lowerLimit, int upperLimit) {
