@@ -40,44 +40,23 @@ public class King implements Piece {
     }
 
     @Override
-    public List<Move> getMoves(Piece[] board,List<Integer> visibleSquares, int startSquare) {
-        List<Move> moves = new ArrayList<>();
+    public List<Move> getValidMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
 
+        List<Move> moves = new ArrayList<>();
         for (int directionOffset : DIRECTION_OFFSETS) {
             int targetSquare = startSquare + directionOffset;
             if (isValidSquare(targetSquare, board, visibleSquares)) {
-                moves.add(new Move(startSquare, targetSquare, symbol));
+                moves.add(new Move(startSquare, targetSquare,symbol));
             }
         }
 
-        char rookSymbol = color.equals(Color.WHITE) ? 'R' : 'r';
-
-        int[] rookSquare = {
-                color.equals(Color.WHITE) ? 63 : 7,
-                color.equals(Color.WHITE) ? 56 : 0
-        };
-
-        int[] squaresToCheck = {
-                color.equals(Color.WHITE) ? 5 : 61,
-                color.equals(Color.WHITE) ? 6 : 62
-        };
-        boolean hasKingSideCastlingRights = color.equals(Color.WHITE) ? whiteKingSideCastlingRights : blackKingSideCastlingRights;
-        Piece kingSideRook = board[rookSquare[1]];
-        if(kingSideRook != null && kingSideRook.getSymbol() == rookSymbol && canCastle(board,visibleSquares,squaresToCheck,hasKingSideCastlingRights)) {
-            moves.add(new Move(startSquare, startSquare + 2, "O-O"));
+        if (canCastle(board, visibleSquares, new int[]{startSquare + 1, startSquare + 2}, color.equals(Color.WHITE) ? whiteKingSideCastlingRights : blackKingSideCastlingRights)) {
+            moves.add(new Move(startSquare, startSquare + 2, symbol));
         }
 
-        squaresToCheck = new int[]{
-                color.equals(Color.WHITE) ? 1 : 57, //b1, b8
-                color.equals(Color.WHITE) ? 2 : 58, //c1, c8
-                color.equals(Color.WHITE) ? 3 : 59  //d1, d8
-        };
-        boolean hasQueenSideCastlingRights = color.equals(Color.WHITE) ? whiteQueenSideCastlingRights : blackQueenSideCastlingRights;
-        Piece queenSidePiece = board[rookSquare[0]];
-        if(queenSidePiece != null && queenSidePiece.getSymbol() == rookSymbol && canCastle(board,visibleSquares,squaresToCheck,hasQueenSideCastlingRights)) {
-            moves.add(new Move(startSquare, startSquare - 2, "O-O-O"));
+        if (canCastle(board, visibleSquares, new int[]{startSquare - 1, startSquare - 2, startSquare - 3}, color.equals(Color.WHITE) ? whiteQueenSideCastlingRights : blackQueenSideCastlingRights)) {
+            moves.add(new Move(startSquare, startSquare - 2, symbol));
         }
-
 
         return moves;
     }
@@ -87,10 +66,11 @@ public class King implements Piece {
         List<Integer> visibleSquares = new ArrayList<>();
         for (int directionOffset : DIRECTION_OFFSETS) {
             int targetSquare = startSquare + directionOffset;
-            if (isValidSquare(targetSquare, board, visibleSquares)) {
+            if (targetSquare >= 0 && targetSquare < 64) {
                 visibleSquares.add(targetSquare);
             }
         }
+
         return visibleSquares;
     }
 

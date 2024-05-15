@@ -29,7 +29,7 @@ public class Knight implements Piece {
 
 
     @Override
-    public List<Move> getMoves(Piece[] board,List<Integer> visibleSquares, int startSquare) {
+    public List<Move> getValidMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
         List<Move> moves = new ArrayList<>();
 
         int[] possibleSquares = {

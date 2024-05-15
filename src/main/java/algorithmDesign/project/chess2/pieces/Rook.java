@@ -30,7 +30,7 @@ public class Rook implements Piece {
     }
 
     @Override
-    public List<Move> getMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
+    public List<Move> getValidMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
         List<Move> moves = new ArrayList<>();
 
         Color enemyColor = color.equals(Color.WHITE) ? Color.BLACK : Color.WHITE;

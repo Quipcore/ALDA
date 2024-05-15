@@ -63,23 +63,10 @@ public class Board {
     }
 
     public boolean isGameOver(){
-        boolean hasWhiteKing = false;
-        boolean hasBlackKing = false;
 
-        for (Piece piece : board) {
-            if(piece != null && piece.getSymbol() == 'K'){
-                hasWhiteKing = true;
-            }
-            if(piece != null && piece.getSymbol() == 'k'){
-                hasBlackKing = true;
-            }
-        }
 
-        boolean hasBothKings = hasBlackKing && hasWhiteKing;
-        if(hasBothKings){
-            return false;
-        }
-        return true;
+
+        return generateMoves().isEmpty();
     }
 
 
@@ -139,8 +126,8 @@ public class Board {
         for(int i = 0; i < board.length; i++){
             Piece piece = board[i];
             if(piece != null && !piece.getColor().equals(colorToMove)){
-                List<Integer> moves = piece.getVisibleSquares(board, i);//.getMoves(board,visibleSquares,i);
-                visibleSquares.addAll(moves);//moves.stream().map(Move::getTo).forEach(visibleSquares::add);
+                List<Integer> moves = piece.getVisibleSquares(board, i);
+                visibleSquares.addAll(moves);
             }
         }
         return visibleSquares.stream().distinct().toList();
@@ -151,20 +138,10 @@ public class Board {
         for (int i = 0; i < board.length; i++) {
             Piece piece = board[i];
             if (piece != null && piece.getColor().equals(colorToMove)) {
-                if(piece.getSymbol() == (colorToMove.equals(Color.WHITE) ? 'K' : 'k') && kingInCheck(i)){
-//                    List<Move> kingMoves = piece.getMoves(board,visibleSquares,i);
-//                    return kingMoves.stream().filter(move -> !visibleSquares.contains(move.getTo())).toList();
-                    moves.addAll(piece.getMoves(board,visibleSquares,i));
-                }else{
-                    moves.addAll(piece.getMoves(board,visibleSquares,i));
-                }
+                moves.addAll(piece.getValidMoves(board,visibleSquares,i));
             }
         }
         return moves.stream().distinct().toList();
-    }
-
-    public boolean kingInCheck(int kingSquare){
-        return visibleSquares.contains(kingSquare);
     }
 
     public Board makeMove(Move move) {
@@ -321,18 +298,34 @@ public class Board {
        A   B   C   D   E   F   G   H
      */
 
+    private static Map<Character, Character> pieceToSymbol = Map.ofEntries(
+            Map.entry('P', '♟'),
+            Map.entry('N', '♞'),
+            Map.entry('B', '♝'),
+            Map.entry('R', '♜'),
+            Map.entry('Q', '♛'),
+            Map.entry('K', '♚'),
+            Map.entry('p', '♙'),
+            Map.entry('n', '♘'),
+            Map.entry('b', '♗'),
+            Map.entry('r', '♖'),
+            Map.entry('q', '♕'),
+            Map.entry('k', '♔'),
+            Map.entry(' ', ' ')
+    );
+
     public void printBoard() {
         for (int i = 0; i < 64; i++) {
             if (i % 8 == 0) {
                 System.out.println("   +---+---+---+---+---+---+---+---+");
             }
             if (i % 8 == 0) {
-                System.out.print((8 - i / 8) + "  | ");
+                System.out.printf("%d  | ", (8 - i / 8));
             }
 
             char piece = board[i] == null ? ' ' : board[i].getSymbol();
-
-            System.out.print(piece + " | ");
+            piece = pieceToSymbol.get(piece);
+            System.out.printf("%c | ", piece);
             if (i % 8 == 7) {
                 System.out.println();
             }
