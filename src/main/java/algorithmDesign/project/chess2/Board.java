@@ -97,18 +97,16 @@ public class Board {
                 int square = rank * 8 + file;
 
                 int numNorth = 7 - rank;
-                int numSouth = rank;
-                int numWest = file;
                 int numEast = 7 - file;
 
                 numSquaresToEdge[square][0] = numNorth; //N
-                numSquaresToEdge[square][1] = numSouth; //S
-                numSquaresToEdge[square][2] = numWest; //W
+                numSquaresToEdge[square][1] = rank; //S
+                numSquaresToEdge[square][2] = file; //W
                 numSquaresToEdge[square][3] = numEast; //E
-                numSquaresToEdge[square][4] = Math.min(numNorth, numWest); //NW
-                numSquaresToEdge[square][5] = Math.min(numSouth, numEast); //SE
+                numSquaresToEdge[square][4] = Math.min(numNorth, file); //NW
+                numSquaresToEdge[square][5] = Math.min(rank, numEast); //SE
                 numSquaresToEdge[square][6] = Math.min(numNorth, numEast); //NE
-                numSquaresToEdge[square][7] = Math.min(numSouth, numWest); //SW
+                numSquaresToEdge[square][7] = Math.min(rank, file); //SW
             }
         }
 
