@@ -89,7 +89,6 @@ public class Position {
     }
 
 
-    //TODO IMPLEMENT A-B-Pruning
     private Position findMaxPosition(Position position, int depth, double alpha, double beta) {
         double maxEval = Double.NEGATIVE_INFINITY;
         Position maxPosition = null;
@@ -111,7 +110,6 @@ public class Position {
         return maxPosition;
     }
 
-        //TODO IMPLEMENT A-B-Pruning
     private Position findMinPosition(Position position, int depth, double alpha, double beta) {
         double minEval = Double.POSITIVE_INFINITY;
         Position minPosition = null;

@@ -13,20 +13,28 @@ public class Bishop implements Piece {
     private Color color;
     private char symbol;
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public Bishop(Color color) {
         this.color = color;
         this.symbol = color == Color.WHITE ? 'B' : 'b';
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public Color getColor() {
         return color;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     @Override
     public char getSymbol() {
         return symbol;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public List<Move> getValidMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
@@ -58,6 +66,8 @@ public class Bishop implements Piece {
 
         return moves;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {

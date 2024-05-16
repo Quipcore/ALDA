@@ -16,7 +16,7 @@ public class ChessTest {
     @Test
     public void testInitialMoveAmountMatches20() {
         Board board = new Board();
-        assertEquals(20, board.generateMoves().size());
+        assertEquals(20, board.generatePseudoLegalMoves().size());
     }
 
     @Test
@@ -28,82 +28,83 @@ public class ChessTest {
     @Test
     public void testMoveAmountOnEmptyBoard() {
         Board board = new Board("8/8/8/8/8/8/8/8 w - - 0 1");
-        assertEquals(0, board.generateMoves().size());
+        assertEquals(0, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testMoveAmountOnDefaultStart() {
         Board board = new Board();
 
-        List<Move> moves = board.generateMoves();
+        List<Move> moves = board.generatePseudoLegalMoves();
         assertEquals(20, moves.size());
     }
+
 
     @Test
     public void testPawnMovesFromStart() {
         Board board = new Board("8/8/8/8/8/8/P7/8 w - - 0 1");
-        assertEquals(2, board.generateMoves().size());
+        assertEquals(2, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testRookMovesInCorner() {
         Board board = new Board("8/8/8/8/8/8/8/R7 w - - 0 1");
-        assertEquals(14, board.generateMoves().size());
+        assertEquals(14, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testBishopMovesInCorner() {
         Board board = new Board("8/8/8/8/8/8/8/B7 w - - 0 1");
-        assertEquals(7, board.generateMoves().size());
+        assertEquals(7, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testQueenMovesInCorner() {
         Board board = new Board("8/8/8/8/8/8/8/Q7 w - - 0 1");
-        assertEquals(21, board.generateMoves().size());
+        assertEquals(21, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testMoveAmountOnSingleQueenBoard() {
         Board board = new Board("8/8/8/8/4Q3/8/8/8 w - - 0 1");
-        assertEquals(27, board.generateMoves().size());
+        assertEquals(27, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testMoveAmountOnSingleKingBoard() {
         Board board = new Board("8/8/8/8/4K3/8/8/8 w - - 0 1");
-        assertEquals(8, board.generateMoves().size());
+        assertEquals(8, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testMoveAmountOnSinglePawnBoard() {
         Board board = new Board("8/8/8/8/4P3/8/8/8 w - - 0 1");
-        assertEquals(1, board.generateMoves().size());
+        assertEquals(1, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testMoveAmountOnSingleKnightBoard() {
         Board board = new Board("8/8/8/8/4N3/8/8/8 w - - 0 1");
-        assertEquals(8, board.generateMoves().size());
+        assertEquals(8, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testMoveAmountOnSingleRookBoard() {
         Board board = new Board("8/8/8/8/4R3/8/8/8 w - - 0 1");
-        assertEquals(14, board.generateMoves().size());
+        assertEquals(14, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testMoveAmountOnSingleBishopBoard() {
         Board board = new Board("8/8/8/8/4B3/8/8/8 w - - 0 1");
-        assertEquals(13, board.generateMoves().size());
+        assertEquals(13, board.generatePseudoLegalMoves().size());
     }
 
     @Test
     public void testEnPassantWestCaptureInclusionInMoveList(){
         String fen = "8/8/8/4pP2/8/8/8/8 w - e6 0 1";
         Board board = new Board(fen);
-        List<Move> moves = board.generateMoves();
+        List<Move> moves = board.generatePseudoLegalMoves();
         assertEquals(2, moves.size());
     }
 
@@ -111,7 +112,7 @@ public class ChessTest {
     public void testEnPassantEastCaptureInclusionInMoveList(){
         String fen = "8/8/8/4Pp2/8/8/8/8 w - f6 0 1";
         Board board = new Board(fen);
-        List<Move> moves = board.generateMoves();
+        List<Move> moves = board.generatePseudoLegalMoves();
         assertEquals(2, moves.size());
     }
 
@@ -119,7 +120,7 @@ public class ChessTest {
     public void testFullWhiteCastlingRights(){
         String fen = "8/8/8/8/8/8/8/R3K2R w KQkq - 0 1";
         Board board = new Board(fen);
-        List<Move> moves = board.generateMoves();
+        List<Move> moves = board.generatePseudoLegalMoves();
         moves = moves.stream().filter(move -> move.getPiece().equalsIgnoreCase("K") || move.isKingSideCastle() || move.isQueenSideCastle()).toList();
         assertEquals(7, moves.size());
     }
@@ -129,7 +130,7 @@ public class ChessTest {
         String fen = "8/8/8/8/8/8/8/R3K2R w KQkq - 0 1";
         Board board = new Board(fen);
         board.printBoard();
-        List<Move> moves = board.generateMoves();
+        List<Move> moves = board.generatePseudoLegalMoves();
         moves = moves.stream().filter(move -> move.getPiece().equalsIgnoreCase("K") || move.isKingSideCastle() || move.isQueenSideCastle()).toList();
 
         assertEquals(7, moves.size());
@@ -140,7 +141,7 @@ public class ChessTest {
         String fen = "8/8/8/8/8/8/8/R3K3 w Kkq - 0 1";
         Board board = new Board(fen);
         board.printBoard();
-        List<Move> moves = board.generateMoves();
+        List<Move> moves = board.generatePseudoLegalMoves();
         moves = moves.stream().filter(move -> move.getPiece().equalsIgnoreCase("K") || move.isKingSideCastle()).toList();
         assertEquals(6, moves.size());
     }
@@ -149,7 +150,7 @@ public class ChessTest {
     public void testWhiteQueenSideCastlingRight(){
         String fen = "8/8/8/8/8/8/8/4K2R w Qkq - 0 1";
         Board board = new Board(fen);
-        List<Move> moves = board.generateMoves();
+        List<Move> moves = board.generatePseudoLegalMoves();
         moves = moves.stream().filter(move -> move.getPiece().equalsIgnoreCase("K") || move.isQueenSideCastle()).toList();
         assertEquals(6, moves.size());
     }
@@ -158,7 +159,7 @@ public class ChessTest {
     public void testLackOfCastlingRights(){
         String fen = "8/8/8/8/8/8/8/4K3 w - - 0 1";
         Board board = new Board(fen);
-        List<Move> moves = board.generateMoves();
+        List<Move> moves = board.generatePseudoLegalMoves();
         assertEquals(5, moves.size());
     }
 

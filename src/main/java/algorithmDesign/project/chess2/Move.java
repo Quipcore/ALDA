@@ -5,10 +5,10 @@ public class Move {
     private int startIndex;
     private int endIndex;
     private String piece;
+    private boolean isCapturing;
+    private char promotionPiece;
 
-//    private PieceToMove pieceToMove;
-
-
+    //------------------------------------------------------------------------------------------------------------------
 
     public Move(int startIndex, int endIndex, char piece) {
         this.startIndex = startIndex;
@@ -16,27 +16,39 @@ public class Move {
         this.piece = Character.toString(piece);
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public Move(int startIndex, int endIndex, String piece) {
         this.startIndex = startIndex;
         this.endIndex = endIndex;
         this.piece = piece;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public boolean isKingSideCastle(){
         return piece.equalsIgnoreCase("o-o");
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     public boolean isQueenSideCastle(){
         return piece.equalsIgnoreCase("o-o-o");
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public boolean isEnPassant() {
         return piece.equalsIgnoreCase("ePassant");
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public String getPiece() {
         return piece;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
@@ -68,20 +80,63 @@ public class Move {
         return endIndex;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public int getFrom() {
         return startIndex;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
 
     public boolean isPawnDoublePush() {
         return piece.equalsIgnoreCase("p") && Math.abs(startIndex - endIndex) == 16;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public boolean isRookMove() {
         return piece.equalsIgnoreCase("r");
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public boolean isKingMove() {
         return piece.equalsIgnoreCase("k");
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public boolean isPawnMove() {
+        return piece.equalsIgnoreCase("p");
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public boolean isCapturing() {
+        return isCapturing;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public void setCapturing(boolean isCapturing) {
+        this.isCapturing = isCapturing;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public boolean isPromotion() {
+        return piece.equalsIgnoreCase("p") && (endIndex < 8 || endIndex > 55);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public char getPromotionPiece() {
+        return promotionPiece;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public void setPromotionPiece(char promotionPiece) {
+        this.promotionPiece = promotionPiece;
     }
 }

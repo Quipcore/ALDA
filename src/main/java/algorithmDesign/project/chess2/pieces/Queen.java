@@ -14,6 +14,8 @@ public class Queen implements Piece {
     private final Piece bishop;
     private final char symbol;
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public Queen(Color color) {
         this.color = color;
         this.symbol = color == Color.WHITE ? 'Q' : 'q';
@@ -22,15 +24,21 @@ public class Queen implements Piece {
         this.bishop = new Bishop(color);
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     @Override
     public Color getColor() {
         return this.color;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     @Override
     public char getSymbol() {
         return this.symbol;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public List<Move> getValidMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
@@ -39,6 +47,8 @@ public class Queen implements Piece {
         moves.addAll(bishop.getValidMoves(board,visibleSquares, startSquare));
         return moves;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {

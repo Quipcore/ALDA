@@ -13,6 +13,7 @@ public class Pawn implements Piece {
     private final char symbol;
     private final String enPassant;
 
+    //------------------------------------------------------------------------------------------------------------------
 
     public Pawn(Color color, String enPassant) {
         this.color = color;
@@ -20,15 +21,21 @@ public class Pawn implements Piece {
         this.enPassant = enPassant;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     @Override
     public Color getColor() {
         return color;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     @Override
     public char getSymbol() {
         return symbol;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public List<Move> getValidMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
@@ -46,6 +53,23 @@ public class Pawn implements Piece {
 
         //Pawn push
         if (board[targetSquare] == null) {
+            if(color.equals(Color.WHITE) && targetSquare < 8 || color.equals(Color.BLACK) && targetSquare >= 56){
+                Move move = new Move(startSquare, targetSquare, symbol);
+                move.setPromotionPiece(color.equals(Color.WHITE) ? 'Q' : 'q');
+                moves.add(move);
+
+                move = new Move(startSquare, targetSquare, symbol);
+                move.setPromotionPiece(color.equals(Color.WHITE) ? 'R' : 'r');
+                moves.add(move);
+
+                move = new Move(startSquare, targetSquare, symbol);
+                move.setPromotionPiece(color.equals(Color.WHITE) ? 'B' : 'b');
+                moves.add(move);
+
+                move = new Move(startSquare, targetSquare, symbol);
+                move.setPromotionPiece(color.equals(Color.WHITE) ? 'N' : 'n');
+                moves.add(move);
+            }
             moves.add(new Move(startSquare, targetSquare, symbol));
         }
 
@@ -88,6 +112,8 @@ public class Pawn implements Piece {
         return moves;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     @Override
     public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {
 
@@ -123,9 +149,13 @@ public class Pawn implements Piece {
 
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     private boolean inRange(int startSquare, int lowerLimit, int upperLimit) {
         return lowerLimit <= startSquare && startSquare < upperLimit;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     private boolean enPassantCapture(int targetSquare) {
         String targetNotation = (char) ('a' + targetSquare % 8) + "" + (9 - targetSquare / 8);

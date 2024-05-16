@@ -18,6 +18,8 @@ public class King implements Piece {
     private final boolean blackKingSideCastlingRights;
     private final boolean blackQueenSideCastlingRights;
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public King(Color color, String fen) {
         this.color = color;
         this.symbol = color.equals(Color.WHITE) ? 'K' : 'k';
@@ -29,15 +31,21 @@ public class King implements Piece {
         this.blackQueenSideCastlingRights = castlingRights.contains("q");
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     @Override
     public Color getColor() {
         return color;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     @Override
     public char getSymbol() {
         return symbol;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public List<Move> getValidMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
@@ -61,6 +69,8 @@ public class King implements Piece {
         return moves;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     @Override
     public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {
         List<Integer> visibleSquares = new ArrayList<>();
@@ -73,6 +83,8 @@ public class King implements Piece {
 
         return visibleSquares;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     private boolean canCastle(Piece[] board, List<Integer> visibleSquares,int[] squaresToCheck, boolean hasCastlingRights) {
         if (!hasCastlingRights) {
@@ -88,13 +100,15 @@ public class King implements Piece {
         return true;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     private boolean isValidSquare(int targetSquare, Piece[] board, List<Integer> visibleSquares) {
         if(targetSquare < 0 || targetSquare >= 64) {
             return false;
         }
 
         if (board[targetSquare] == null && !visibleSquares.contains(targetSquare)) {
-            return true;//;
+            return true;
         }
 
         return board[targetSquare] != null && !board[targetSquare].getColor().equals(this.color) && !visibleSquares.contains(targetSquare);

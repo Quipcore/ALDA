@@ -14,20 +14,28 @@ public class Rook implements Piece {
     private final Color color;
     private final char symbol;
 
+    //------------------------------------------------------------------------------------------------------------------
+
     public Rook(Color color) {
         this.color = color;
         this.symbol = color == Color.WHITE ? 'R' : 'r';
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public Color getColor() {
         return this.color;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     @Override
     public char getSymbol() {
         return this.symbol;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public List<Move> getValidMoves(Piece[] board, List<Integer> visibleSquares, int startSquare) {
@@ -62,6 +70,8 @@ public class Rook implements Piece {
 
         return moves;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public List<Integer> getVisibleSquares(Piece[] board, int startSquare) {
