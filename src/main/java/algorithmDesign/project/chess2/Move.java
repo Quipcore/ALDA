@@ -26,13 +26,13 @@ public class Move {
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public boolean isKingSideCastle(){
+    public boolean isKingSideCastle() {
         return piece.equalsIgnoreCase("o-o");
     }
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public boolean isQueenSideCastle(){
+    public boolean isQueenSideCastle() {
         return piece.equalsIgnoreCase("o-o-o");
     }
 
@@ -53,7 +53,7 @@ public class Move {
     @Override
     public String toString() {
 
-        if(piece.equalsIgnoreCase("o-o-o") || piece.equalsIgnoreCase("o-o")){
+        if (piece.equalsIgnoreCase("o-o-o") || piece.equalsIgnoreCase("o-o")) {
             return "Move{" +
                     "piece=" + piece +
                     "}";
@@ -65,7 +65,7 @@ public class Move {
         int endFile = 'a' + endIndex % 8;
         int endRank = 8 - endIndex / 8;
 
-        if(piece.equalsIgnoreCase("p")) {
+        if (piece.equalsIgnoreCase("p")) {
             return "" + (char) endFile + (endRank);
         }
 

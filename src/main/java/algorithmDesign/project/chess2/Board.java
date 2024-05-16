@@ -249,6 +249,52 @@ public class Board {
     //------------------------------------------------------------------------------------------------------------------
 
     private String getFenFromBoard(Piece[] board, Move latestMove) {
+        return generateFenPos(board) + " " +
+                (this.colorToMove.equals(Color.WHITE) ? "b" : "w") + " " +
+                getCastlingRightsFromMove(latestMove) + " " +
+                generateEnPassantSquare(latestMove) + " " +
+                generateFenHalfMoveClock(latestMove) + " " +
+                generateFenFullMoveClock();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    private int generateFenFullMoveClock() {
+        int fullMoveClock = this.fullMoveClock;
+        if (this.colorToMove.equals(Color.WHITE)) {
+            fullMoveClock++;
+        }
+        return fullMoveClock;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    private int generateFenHalfMoveClock(Move latestMove) {
+        int halfMoveClock = this.halfMoveClock;
+        if (latestMove.isCapturing() || latestMove.isPawnMove()) {
+            halfMoveClock = 0;
+        } else {
+            halfMoveClock++;
+        }
+        return halfMoveClock;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    private String generateEnPassantSquare(Move latestMove) {
+        if (latestMove.isPawnDoublePush()) {
+            char startFile = (char) ('a' + latestMove.getTo() % 8);
+            int startRank = 8 - latestMove.getTo() / 8;
+            return "" + startFile + startRank;
+        } else {
+            return "-";
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    private String generateFenPos(Piece[] board) {
+
         StringBuilder fen = new StringBuilder();
         int emptySquares = 0;
 
@@ -276,68 +322,10 @@ public class Board {
             fen.append(emptySquares);
         }
 
-        fen.append(" ");
-
-        String colorToMove = this.colorToMove.equals(Color.WHITE) ? "b" : "w";
-        fen.append(colorToMove);
-
-        fen.append(" ");
-
-        String castlingRights = getCastlingRightsFromMove(latestMove);
-        fen.append(castlingRights);
-
-        fen.append(" ");
-
-        if (latestMove.isPawnDoublePush()) {
-            char startFile = (char) ('a' + latestMove.getTo() % 8);
-            int startRank = 8 - latestMove.getTo() / 8;
-            String toSquare = "" + startFile + startRank;
-            fen.append(toSquare);
-        } else {
-            fen.append("-");
-        }
-
-        fen.append(" ");
-
-        int halfMoveClock = this.halfMoveClock;
-        if (latestMove.isCapturing() || latestMove.isPawnMove()) {
-            halfMoveClock = 0;
-        } else {
-            halfMoveClock++;
-        }
-        fen.append(halfMoveClock);
-
-        fen.append(" ");
-        int fullMoveClock = this.fullMoveClock;
-        if (colorToMove.equalsIgnoreCase("w")) {
-            fullMoveClock++;
-        }
-        fen.append(fullMoveClock);
         return fen.toString();
     }
 
-
-    //
-    /*
-     +---+---+---+---+---+---+---+---+
-  8  | r | n | b | q | k | b | n | r |
-     +---+---+---+---+---+---+---+---+
-  7  | p | p | p | p | p | p | p | p |
-     +---+---+---+---+---+---+---+---+
-  6  |   |   |   |   |   |   |   |   |
-     +---+---+---+---+---+---+---+---+
-  5  |   |   |   |   |   |   |   |   |
-     +---+---+---+---+---+---+---+---+
-  4  |   |   |   |   |   |   |   |   |
-     +---+---+---+---+---+---+---+---+
-  3  |   |   |   |   |   |   |   |   |
-     +---+---+---+---+---+---+---+---+
-  2  | P | P | P | P | P | P | P | P |
-     +---+---+---+---+---+---+---+---+
-  1  | R | N | B | Q | K | B | N | R |
-     +---+---+---+---+---+---+---+---+
-       A   B   C   D   E   F   G   H
-     */
+    //------------------------------------------------------------------------------------------------------------------
 
     private String getCastlingRightsFromMove(Move latestMove) {
         String castlingRights = this.castlingRights;
@@ -367,7 +355,26 @@ public class Board {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-
+    /*
+     +---+---+---+---+---+---+---+---+
+  8  | r | n | b | q | k | b | n | r |
+     +---+---+---+---+---+---+---+---+
+  7  | p | p | p | p | p | p | p | p |
+     +---+---+---+---+---+---+---+---+
+  6  |   |   |   |   |   |   |   |   |
+     +---+---+---+---+---+---+---+---+
+  5  |   |   |   |   |   |   |   |   |
+     +---+---+---+---+---+---+---+---+
+  4  |   |   |   |   |   |   |   |   |
+     +---+---+---+---+---+---+---+---+
+  3  |   |   |   |   |   |   |   |   |
+     +---+---+---+---+---+---+---+---+
+  2  | P | P | P | P | P | P | P | P |
+     +---+---+---+---+---+---+---+---+
+  1  | R | N | B | Q | K | B | N | R |
+     +---+---+---+---+---+---+---+---+
+       A   B   C   D   E   F   G   H
+     */
     public void printBoard() {
         for (int i = 0; i < 64; i++) {
             if (i % 8 == 0) {
