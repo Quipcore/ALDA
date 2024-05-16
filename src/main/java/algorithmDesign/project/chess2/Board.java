@@ -117,7 +117,28 @@ public class Board {
     //------------------------------------------------------------------------------------------------------------------
 
     public boolean isGameOver() {
-        return generateLegalMoves().isEmpty() || !hasBothKings() || halfMoveClock >= 2 * 50 || hasInsufficientMaterial();
+
+        if(generateLegalMoves().isEmpty()){
+            System.out.println("No moves left");
+            return true;
+        }
+
+        if(!hasBothKings()){
+            System.out.println("One of the kings is missing");
+            return true;
+        }
+
+        if(halfMoveClock >= 2 * 50){
+            System.out.println("Half move clock exceeded");
+            return true;
+        }
+
+        if(hasInsufficientMaterial()){
+            System.out.println("Insufficient material");
+            return true;
+        }
+        return false;
+//        return generateLegalMoves().isEmpty() || !hasBothKings() || halfMoveClock >= 2 * 50 || hasInsufficientMaterial();
     }
 
     //------------------------------------------------------------------------------------------------------------------
