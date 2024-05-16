@@ -2,9 +2,9 @@ package algorithmDesign.project.chess2;
 
 public class Move {
 
-    private int startIndex;
-    private int endIndex;
-    private String piece;
+    private final int startIndex;
+    private final int endIndex;
+    private final String piece;
     private boolean isCapturing;
     private char promotionPiece;
 

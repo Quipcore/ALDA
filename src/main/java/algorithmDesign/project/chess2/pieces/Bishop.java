@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Bishop implements Piece {
 
-    private Color color;
-    private char symbol;
+    private final Color color;
+    private final char symbol;
 
     //------------------------------------------------------------------------------------------------------------------
 
