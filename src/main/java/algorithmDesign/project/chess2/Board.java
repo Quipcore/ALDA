@@ -117,7 +117,30 @@ public class Board {
     //------------------------------------------------------------------------------------------------------------------
 
     public boolean isGameOver() {
-        return generateLegalMoves().isEmpty() || !hasBothKings() || halfMoveClock >= 2 * 50;
+        return generateLegalMoves().isEmpty() || !hasBothKings() || halfMoveClock >= 2 * 50 || hasInsufficientMaterial();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    private boolean hasInsufficientMaterial() {
+        Map<Character, Integer> amountOfPieces = new HashMap<>();
+        for (Piece piece : board) {
+            if (piece != null) {
+                amountOfPieces.put(piece.getSymbol(), amountOfPieces.getOrDefault(piece.getSymbol(), 0) + 1);
+            }
+        }
+
+        //Only kings left
+        if(amountOfPieces.size() == 2){
+            return true;
+        }
+
+        int totalPieces = amountOfPieces.values().stream().mapToInt(Integer::intValue).sum();
+        if(totalPieces == 3){
+            return amountOfPieces.containsKey('B') || amountOfPieces.containsKey('b');
+        }
+
+        return false;
     }
 
     //------------------------------------------------------------------------------------------------------------------
