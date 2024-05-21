@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import algorithmDesign.huffman.EncodedMessage;
+import algorithmDesign.huffman.HuffmanCoder;
 import org.junit.jupiter.api.Test;
 
 class HuffmanCoderTest {

@@ -1,4 +1,4 @@
-package algorithmDesign;
+package algorithmDesign.huffman;
 
 @SuppressWarnings("ClassCanBeRecord")
 public final class EncodedMessage<HeaderType, MessageType> {

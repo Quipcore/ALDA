@@ -1,4 +1,4 @@
-package algorithmDesign.project;
+package algorithmDesign.project.minimax;
 
 import java.util.Random;
 
@@ -9,6 +9,7 @@ import java.util.Random;
 public class Main {
 
     Random random = new Random();
+    public static int MAX_DEPTH = 3;
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -18,12 +19,14 @@ public class Main {
 
     public void run() {
         mPosition startPos = new mPosition();
-        double eval = minimax(startPos, 3, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true);
+        double eval = minimax(startPos, MAX_DEPTH, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true);
         System.out.println(eval);
     }
 
     private double minimax(mPosition mPosition, int depth, double alpha, double beta, boolean maximizingPlayer) {
-        System.out.printf("Height %d, Alpha %f, Beta %f, MaximizingPlayer %b\n",depth,alpha,beta,maximizingPlayer);
+        int reversedDepth = MAX_DEPTH - depth; // Reversed depth
+        String indentation = "         ".repeat(reversedDepth); // Create an indentation string of spaces
+        System.out.printf("%sHeight %d, Alpha %f, Beta %f, MaximizingPlayer %b\n", indentation, depth, alpha, beta, maximizingPlayer);
         if (depth == 0 || mPosition.isGameOver()) {
             return mPosition.evaluate();
         }
