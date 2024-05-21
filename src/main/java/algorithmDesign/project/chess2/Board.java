@@ -13,7 +13,7 @@ public class Board {
     public static final int[] DIRECTION_OFFSETS = {
             8, -8, 1, -1, 7, -7, 9, -9
     };
-
+    private static final String fenRegex = "^([rnbqkpRNBQKP1-8]+\\/){7}[rnbqkpRNBQKP1-8]+ [wb] [KQkq-]{1,4} (-|([a-h][1-8])) [0-9]+ [0-9]+$";
     private static final Random random = new Random();
     private static final Map<String, Integer> repetitionMap = new HashMap<>();
 
@@ -46,15 +46,36 @@ public class Board {
 
     //------------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Creates a new board with the default starting position
+     */
     public Board() {
         this(START_FEN);
     }
 
     //------------------------------------------------------------------------------------------------------------------
-
+    /**
+     * Creates a chess board from the given FEN string.
+     *
+     * @param fen The FEN of the board
+     * @throws IllegalArgumentException If the FEN is invalid
+     * @throws IllegalStateException    If the FEN results in an illegal board state
+     */
     public Board(String fen) {
+
+        if(fen == null){
+            throw new IllegalArgumentException("FEN cannot be null");
+        }
+        if(fen.isBlank()){
+            throw new IllegalArgumentException("FEN cannot be blank");
+        }
+        if(!fen.matches(fenRegex)){
+            throw new IllegalArgumentException("Invalid FEN: " + fen);
+        }
+
         String[] splits = fen.split(" ");
         this.enPassantSquare = splits[3];
+
         pieceMap = new HashMap<>() {
             {
                 put('P', new Pawn(Color.WHITE, enPassantSquare));
@@ -77,17 +98,25 @@ public class Board {
         board = new Piece[64];
 
         setupBoard(this.board, splits[0]);
+
         this.colorToMove = splits[1].equals("w") ? Color.WHITE : Color.BLACK;
         this.castlingRights = splits[2];
         this.halfMoveClock = Integer.parseInt(splits[4]);
         this.fullMoveClock = Integer.parseInt(splits[5]);
         this.visibleSquares = generateVisibleSquares();
+
+        if(isGameOver()){
+            throw new IllegalStateException("Generated board is in an illegal state");
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Computes the number of squares to the edge of the board in each direction. Where first index is the square and the second index is the direction
+     * Computes the number of squares to the edge of the board in each direction. Where first index is the square and the second index is the direction.
+     * Directions are as follows: N, S, W, E, NW, SE, NE, SW
+     * if a piece is on square 5, the number of squares to the edge of the board in each direction is as follows:
+     * [2, 5, 1, 2, 2, 2, 2, 1]. That means there are 2 squares to the north, 5 to the south, 1 to the west, 2 to the east, 2 to the northwest, 2 to the southeast, 2 to the northeast and 1 to the southwest.
      *
      * @return A 2D array with the number of squares to the edge of the board in each direction
      */
@@ -121,31 +150,25 @@ public class Board {
     public boolean isGameOver() {
 
         if(generateLegalMoves().isEmpty()){
-//            System.out.println("No moves left");
             return true;
         }
 
         if(!hasBothKings()){
-//            System.out.println("One of the kings is missing");
             return true;
         }
 
         if(halfMoveClock >= 2 * 50){
-//            System.out.println("Half move clock exceeded");
             return true;
         }
 
         if(hasInsufficientMaterial()){
-//            System.out.println("Insufficient material");
             return true;
         }
 
         if(repetitionMap.getOrDefault(currentFen,0)>= 3){
-//            System.out.println("Repetition");
             return true;
         }
         return false;
-//        return generateLegalMoves().isEmpty() || !hasBothKings() || halfMoveClock >= 2 * 50 || hasInsufficientMaterial();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -207,6 +230,12 @@ public class Board {
 
     //------------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Generates a list of pseudo legal moves for the current board state.
+     * A pseudo legal move is a move that is valid but doesn't check for move constrains such as checks or pins.
+     *
+     * @return A list of possible pseudo legal moves that can be made on the current board
+     */
     public List<Move> generatePseudoLegalMoves() {
         List<Move> pseudoLegalMoves = new ArrayList<>();
         for (int i = 0; i < board.length; i++) {
@@ -220,6 +249,12 @@ public class Board {
 
     //------------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Generates a list of legal moves for the current board state.
+     * A legal move is a move that is valid according to the rules of chess.
+     *
+     * @return A list of possible legal moves that can be made on the current board
+     */
     public List<Move> generateLegalMoves() {
 //        List<Move> legalMoves = new ArrayList<>();
 //        List<Move> pseudoLegalMoves = generatePseudoLegalMoves();
@@ -252,7 +287,28 @@ public class Board {
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public Board makeMove(Move move) {
+    /**
+     * Makes a move on the board and returns the new board state.
+     * !IMPORTANT! This method does not check if the move is legal, it is assumed that the move is legal.
+     * If the move is not legal, the board state will be in an illegal state but no exception will be thrown.
+     * @param move The move to make on the board
+     * @return The new board state after the move has been made
+     * @throws IllegalArgumentException If the move is null or if the target square of the move is outside the boards 64 square range
+     * @throws InvalidMoveException If the move doesn't match the regex of a valid move
+     */
+    public Board makeMove(Move move) throws InvalidMoveException {
+        if(move == null){
+            throw new IllegalArgumentException("Move cannot be null");
+        }
+
+        if(move.getTo() < 0 || move.getTo() >= 64){
+            throw new IllegalArgumentException("Target square of move outside boards 64 square range: " + move);
+        }
+
+        if(!move.toString().matches("^([rnbqkRNBQK]?[a-h][1-9]|o-o|o-o-o|O-O|O-O-O|enPassant)$")){
+            throw new InvalidMoveException(move.toString());
+        }
+
         Piece[] newBoard = board.clone();
 
         if (move.isKingSideCastle()) {
@@ -296,7 +352,12 @@ public class Board {
             newBoard[move.getFrom()] = null;
         }
         String fen = getFenFromBoard(newBoard, move);
-        return new Board(fen);
+
+        try{
+            return new Board(fen);
+        } catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -347,7 +408,6 @@ public class Board {
     //------------------------------------------------------------------------------------------------------------------
 
     private String generateFenPos(Piece[] board) {
-
         StringBuilder fen = new StringBuilder();
         int emptySquares = 0;
 
@@ -428,6 +488,11 @@ public class Board {
      +---+---+---+---+---+---+---+---+
        A   B   C   D   E   F   G   H
      */
+
+    /**
+     * Prints the current board state to the system out.
+     * Displays the board, using ascii characters and the FEN of the board.
+     */
     public void printBoard() {
         for (int i = 0; i < 64; i++) {
             if (i % 8 == 0) {
@@ -438,7 +503,6 @@ public class Board {
             }
 
             char piece = board[i] == null ? ' ' : board[i].getSymbol();
-//            piece = pieceToSymbol.get(piece);
             System.out.printf("%c | ", piece);
             if (i % 8 == 7) {
                 System.out.println();
@@ -473,7 +537,10 @@ public class Board {
 
     //------------------------------------------------------------------------------------------------------------------
 
-
+    /**
+     * Returns the evaluation of the current board state.
+     * @return The evaluation of the current board state
+     */
     public double getEvaluation() {
         double eval = 0;
         for(int i = 0; i < board.length; i++){

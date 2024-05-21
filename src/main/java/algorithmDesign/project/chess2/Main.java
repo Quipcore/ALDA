@@ -27,7 +27,7 @@ public class Main {
         }
     }
 
-    public static void playRandomGame() {
+    public static void playRandomGame() throws InvalidMoveException {
 
         List<String> fens = new ArrayList<>();
 

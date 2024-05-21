@@ -69,6 +69,7 @@ public class Bishop implements Piece {
                 if (targetSquare < 0 || targetSquare >= 64) {
                     break;
                 }
+
                 Piece piece = board[targetSquare];
                 if(piece != null && piece.getColor().equals(color)){
                     break;

@@ -3,10 +3,8 @@ package algorithmDesign.project.minimax;
 import algorithmDesign.project.chess2.Board;
 import algorithmDesign.project.chess2.Move;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 
 public class Position {
 
@@ -76,7 +74,16 @@ public class Position {
         Player opponent = nextPlayer();
         childPositions = new HashSet<>();
         for(Move move : board.generateLegalMoves()){
-            Board childBoard = board.makeMove(move);
+            Board childBoard = null;
+            try {
+                childBoard = board.makeMove(move);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(childBoard == null){
+                continue;
+            }
+
             Position childPosition = new Position(opponent,childBoard, move);
             childPositions.add(childPosition);
         }
@@ -87,7 +94,12 @@ public class Position {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-
+    
+    /**
+     * Returns the static evaluation of the current position. King capture is considered mate and is given a value of  -10000 for white and 10000 for black
+     *
+     * @return the static evaluation of the current position
+     */
 
     public double getEvaluation() {
         if(isMate()){

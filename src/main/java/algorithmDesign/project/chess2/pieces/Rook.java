@@ -73,6 +73,8 @@ public class Rook implements Piece {
                     break;
                 }
 
+
+
                 Piece piece = board[targetSquare];
 
                 if(piece != null && piece.getColor().equals(color)){
