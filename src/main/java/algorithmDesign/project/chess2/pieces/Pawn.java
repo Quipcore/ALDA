@@ -36,7 +36,7 @@ public class Pawn implements Piece {
 
     @Override
     public int getPieceValue(int square) {
-        return this.pieceValue * bonusEval[square];
+        return this.pieceValue;// * bonusEval[square] / 10;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -114,11 +114,14 @@ public class Pawn implements Piece {
             }
         }
 
+
+        if(enPassant.equals("-")){
+            return moves;
+        }
         int[] enPassantCaptureOffsets = {
                 startSquare - 1,
                 startSquare + 1
         };
-
         for (int enPassantCaptureSquare : enPassantCaptureOffsets) {
             if (inRange(enPassantCaptureSquare + forwardDirection, 0, 64)) {
                 if (enPassantCapture(enPassantCaptureSquare)) {

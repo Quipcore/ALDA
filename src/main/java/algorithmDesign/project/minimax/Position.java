@@ -4,19 +4,22 @@ import algorithmDesign.project.chess2.Board;
 import algorithmDesign.project.chess2.Move;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class Position {
 
     private static final double ALFA = Double.NEGATIVE_INFINITY;
     private static final double BETA = Double.POSITIVE_INFINITY;
-    private static final int INIT_SEARCH_DEPTH = 3;
+    private static final int INIT_SEARCH_DEPTH = 4;
 
     private final Player currentPlayer;
     private final double evaluation;
-    private List<Position> childPositions;
+    private Collection<Position> childPositions;
     private Board board;
     private double potential;
+    private Move move;
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -29,9 +32,16 @@ public class Position {
     //------------------------------------------------------------------------------------------------------------------
 
 
-    public Position(Player player, Board board) {
+    public Position(Player player, Board board, Move move) {
         this(player);
         this.board = board;
+        this.move = move;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public Move getMove() {
+        return move;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -51,7 +61,7 @@ public class Position {
     //------------------------------------------------------------------------------------------------------------------
 
 
-    public List<Position> getChildren() {
+    public Collection<Position> getChildren() {
 
         if (childPositions == null) {
             generateChildPositions();
@@ -64,11 +74,15 @@ public class Position {
 
     private void generateChildPositions() {
         Player opponent = nextPlayer();
-        childPositions = new ArrayList<>();
+        childPositions = new HashSet<>();
         for(Move move : board.generateLegalMoves()){
             Board childBoard = board.makeMove(move);
-            Position childPosition = new Position(opponent,childBoard);
+            Position childPosition = new Position(opponent,childBoard, move);
             childPositions.add(childPosition);
+        }
+
+        if(childPositions.contains(null)){
+            System.out.println("Null child position");
         }
     }
 
@@ -76,6 +90,9 @@ public class Position {
 
 
     public double getEvaluation() {
+        if(isMate()){
+            return currentPlayer == Player.WHITE ? -10000 : 10000;
+        }
         return evaluation;
     }
 
@@ -119,6 +136,10 @@ public class Position {
         }
     }
 
+    private boolean isMate() {
+        return board.isMate();
+    }
+
     //------------------------------------------------------------------------------------------------------------------
 
     private Position findMaxPosition(Position position, int depth, double alpha, double beta) {
@@ -126,7 +147,12 @@ public class Position {
         Position maxPosition = null;
 
         for (Position childPosition : position.getChildren()) {
-            double eval = mimimaxPosition(childPosition, depth - 1, alpha, beta).getPotential();
+            Position currentPos = mimimaxPosition(childPosition, depth - 1, alpha, beta);
+            if(currentPos == null){
+                System.out.println("Null child position");
+            }
+            double eval = currentPos.getPotential();
+//            double eval = mimimaxPosition(childPosition, depth - 1, alpha, beta).getPotential();
             if (eval > maxEval) {
                 maxEval = eval;
                 maxPosition = childPosition;

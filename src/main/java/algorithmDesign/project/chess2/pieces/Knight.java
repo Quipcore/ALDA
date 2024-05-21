@@ -35,7 +35,7 @@ public class Knight implements Piece {
 
     @Override
     public int getPieceValue(int square) {
-        return this.pieceValue * bonusEval[square];
+        return this.pieceValue;// * bonusEval[square];
     }
 
     //------------------------------------------------------------------------------------------------------------------

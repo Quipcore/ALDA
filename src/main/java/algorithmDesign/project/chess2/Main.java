@@ -13,10 +13,16 @@ public class Main {
 
     public static void main(String[] args) {
         Position position = new Position(Player.WHITE);
-        for(int i = 0; i < 100 || position.isGameOver(); i++){
+        position.getBoard().printBoard();
+        for(int i = 0; i < 100 && !position.isGameOver(); i++){
+            if(i == 30){
+                System.out.println("Debug");
+            }
+
             Position optimalPosition = position.getOptimalPosition();
             optimalPosition.getBoard().printBoard();
-            System.out.println();
+            System.out.println(optimalPosition.getMove());
+            System.out.println(i);
             position = optimalPosition;
         }
     }

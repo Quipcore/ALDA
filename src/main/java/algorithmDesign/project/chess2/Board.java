@@ -121,27 +121,27 @@ public class Board {
     public boolean isGameOver() {
 
         if(generateLegalMoves().isEmpty()){
-            System.out.println("No moves left");
+//            System.out.println("No moves left");
             return true;
         }
 
         if(!hasBothKings()){
-            System.out.println("One of the kings is missing");
+//            System.out.println("One of the kings is missing");
             return true;
         }
 
         if(halfMoveClock >= 2 * 50){
-            System.out.println("Half move clock exceeded");
+//            System.out.println("Half move clock exceeded");
             return true;
         }
 
         if(hasInsufficientMaterial()){
-            System.out.println("Insufficient material");
+//            System.out.println("Insufficient material");
             return true;
         }
 
         if(repetitionMap.getOrDefault(currentFen,0)>= 3){
-            System.out.println("Repetition");
+//            System.out.println("Repetition");
             return true;
         }
         return false;
@@ -193,15 +193,16 @@ public class Board {
     //------------------------------------------------------------------------------------------------------------------
 
     private List<Integer> generateVisibleSquares() {
-        List<Integer> visibleSquares = new ArrayList<>();
-        for (int i = 0; i < board.length; i++) {
-            Piece piece = board[i];
-            if (piece != null && !piece.getColor().equals(colorToMove)) {
-                List<Integer> moves = piece.getVisibleSquares(board, i);
-                visibleSquares.addAll(moves);
-            }
-        }
-        return visibleSquares.stream().distinct().toList();
+//        List<Integer> visibleSquares = new ArrayList<>();
+//        for (int i = 0; i < board.length; i++) {
+//            Piece piece = board[i];
+//            if (piece != null && !piece.getColor().equals(colorToMove)) {
+//                List<Integer> moves = piece.getVisibleSquares(board, i);
+//                visibleSquares.addAll(moves);
+//            }
+//        }
+//        return visibleSquares.stream().distinct().toList();
+        return new ArrayList<>();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -220,15 +221,16 @@ public class Board {
     //------------------------------------------------------------------------------------------------------------------
 
     public List<Move> generateLegalMoves() {
-        List<Move> legalMoves = new ArrayList<>();
-        List<Move> pseudoLegalMoves = generatePseudoLegalMoves();
-        for (Move move : pseudoLegalMoves) {
-            Board newBoard = makeMove(move);
-            if (newBoard.hasBothKings()) {
-                legalMoves.add(move);
-            }
-        }
-        return legalMoves;
+//        List<Move> legalMoves = new ArrayList<>();
+//        List<Move> pseudoLegalMoves = generatePseudoLegalMoves();
+//        for (Move move : pseudoLegalMoves) {
+//            Board newBoard = makeMove(move);
+//            if (newBoard.hasBothKings()) {
+//                legalMoves.add(move);
+//            }
+//        }
+//        return legalMoves;
+        return generatePseudoLegalMoves();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -436,7 +438,7 @@ public class Board {
             }
 
             char piece = board[i] == null ? ' ' : board[i].getSymbol();
-            piece = pieceToSymbol.get(piece);
+//            piece = pieceToSymbol.get(piece);
             System.out.printf("%c | ", piece);
             if (i % 8 == 7) {
                 System.out.println();
@@ -477,10 +479,15 @@ public class Board {
         for(int i = 0; i < board.length; i++){
             Piece piece = board[i];
             if(piece != null){
-                eval += piece.getPieceValue(i);
+                double pieceValue = piece.getPieceValue(i);
+                eval += pieceValue;
             }
         }
 
-        return eval * random.nextDouble();
+        return eval;
+    }
+
+    public boolean isMate() {
+        return !hasBothKings();
     }
 }
