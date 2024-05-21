@@ -147,12 +147,7 @@ public class Position {
         Position maxPosition = null;
 
         for (Position childPosition : position.getChildren()) {
-            Position currentPos = mimimaxPosition(childPosition, depth - 1, alpha, beta);
-            if(currentPos == null){
-                System.out.println("Null child position");
-            }
-            double eval = currentPos.getPotential();
-//            double eval = mimimaxPosition(childPosition, depth - 1, alpha, beta).getPotential();
+            double eval = mimimaxPosition(childPosition, depth - 1, alpha, beta).getPotential();
             if (eval > maxEval) {
                 maxEval = eval;
                 maxPosition = childPosition;
