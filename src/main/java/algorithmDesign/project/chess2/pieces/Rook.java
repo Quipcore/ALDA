@@ -13,12 +13,31 @@ public class Rook implements Piece {
 
     private final Color color;
     private final char symbol;
+    private final int pieceValue;
+    private final int[] bonusEval = {
+            1, 30, 30, 30, 30, 30, 30, 1,
+            30, 40, 50, 50, 50, 50, 40, 30,
+            30, 50, 70, 70, 70, 70, 50, 30,
+            30, 50, 70, 80, 80, 70, 50, 30,
+            30, 50, 70, 80, 80, 70, 50, 30,
+            30, 50, 70, 70, 70, 70, 50, 30,
+            30, 40, 50, 50, 50, 50, 40, 30,
+            1, 30, 30, 30, 30, 30, 30, 1,
+    };
 
     //------------------------------------------------------------------------------------------------------------------
 
     public Rook(Color color) {
         this.color = color;
         this.symbol = color == Color.WHITE ? 'R' : 'r';
+        this.pieceValue = color == Color.WHITE ? 5 : -5;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public int getPieceValue(int square) {
+        return this.pieceValue * bonusEval[square];
     }
 
     //------------------------------------------------------------------------------------------------------------------

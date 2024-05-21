@@ -1,37 +1,57 @@
 package algorithmDesign.project.minimax;
 
-import java.util.Random;
+import algorithmDesign.project.chess2.Board;
+import algorithmDesign.project.chess2.Move;
 
-/**
- * Represents the game state of a chosen game
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class Position {
 
-    private static final Random random = new Random();
     private static final double ALFA = Double.NEGATIVE_INFINITY;
     private static final double BETA = Double.POSITIVE_INFINITY;
-    private static final int INIT_SEARCH_DEPTH = 20;
+    private static final int INIT_SEARCH_DEPTH = 3;
 
     private final Player currentPlayer;
     private final double evaluation;
-    private Position[] childPositions;
-
+    private List<Position> childPositions;
+    private Board board;
     private double potential;
+
+    //------------------------------------------------------------------------------------------------------------------
 
     public Position(Player player) {
         this.currentPlayer = player;
-        evaluation = random.nextInt(-100, 100);
+        board = new Board();
+        evaluation = board.getEvaluation();
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+
+    public Position(Player player, Board board) {
+        this(player);
+        this.board = board;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
 
     public Player nextPlayer() {
         return currentPlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
+
     public boolean isGameOver() {
-        return false;
+        return board.isGameOver();
     }
 
-    public Position[] getChildren() {
+    //------------------------------------------------------------------------------------------------------------------
+
+
+    public List<Position> getChildren() {
 
         if (childPositions == null) {
             generateChildPositions();
@@ -40,26 +60,34 @@ public class Position {
         return childPositions;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     private void generateChildPositions() {
-
         Player opponent = nextPlayer();
-
-        childPositions = new Position[2];
-        childPositions[0] = new Position(opponent);
-        childPositions[1] = new Position(opponent);
+        childPositions = new ArrayList<>();
+        for(Move move : board.generateLegalMoves()){
+            Board childBoard = board.makeMove(move);
+            Position childPosition = new Position(opponent,childBoard);
+            childPositions.add(childPosition);
+        }
     }
 
-    public Player currentPlayer() {
-        return currentPlayer;
-    }
+    //------------------------------------------------------------------------------------------------------------------
+
 
     public double getEvaluation() {
         return evaluation;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
+
     private double getPotential() {
         return potential;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+
 
     private void setPotential(double potential) {
         this.potential = potential;
@@ -75,6 +103,9 @@ public class Position {
         return mimimaxPosition(this, INIT_SEARCH_DEPTH, ALFA, BETA);
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
+
     private Position mimimaxPosition(Position position, int depth, double alpha, double beta) {
         if (depth == 0 || position.isGameOver()) {
             position.setPotential(position.getEvaluation());
@@ -88,6 +119,7 @@ public class Position {
         }
     }
 
+    //------------------------------------------------------------------------------------------------------------------
 
     private Position findMaxPosition(Position position, int depth, double alpha, double beta) {
         double maxEval = Double.NEGATIVE_INFINITY;
@@ -110,6 +142,9 @@ public class Position {
         return maxPosition;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
+
     private Position findMinPosition(Position position, int depth, double alpha, double beta) {
         double minEval = Double.POSITIVE_INFINITY;
         Position minPosition = null;
@@ -127,5 +162,22 @@ public class Position {
         }
         position.setPotential(minEval);
         return minPosition;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "currentPlayer=" + currentPlayer +
+                ", evaluation=" + evaluation +
+                ", potential=" + potential +
+                ", fen='" + board.getFen() + '\'' +
+                '}';
+    }
+
+    public Board getBoard() {
+        return board;
     }
 }

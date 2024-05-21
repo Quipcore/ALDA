@@ -12,13 +12,31 @@ public class Pawn implements Piece {
     private final Color color;
     private final char symbol;
     private final String enPassant;
-
+    private final int pieceValue;
+    private final int[] bonusEval = {
+            100, 100, 100, 100, 100, 100, 100, 100,
+            70, 70, 70, 70, 70, 70, 70, 70,
+            10, 60, 60, 60, 60, 60, 60, 10,
+            10, 20, 40, 50, 50, 40, 20, 10,
+            10, 20, 40, 50, 50, 40, 20, 10,
+            10, 20, 40, 40, 40, 40, 20, 10,
+            10, 20, 20, 20, 20, 20, 20, 10,
+            10, 10, 10, 10, 10, 10, 10, 10
+    };
     //------------------------------------------------------------------------------------------------------------------
 
     public Pawn(Color color, String enPassant) {
         this.color = color;
         this.symbol = color == Color.WHITE ? 'P' : 'p';
         this.enPassant = enPassant;
+        this.pieceValue = color == Color.WHITE ? 1 : -1;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public int getPieceValue(int square) {
+        return this.pieceValue * bonusEval[square];
     }
 
     //------------------------------------------------------------------------------------------------------------------

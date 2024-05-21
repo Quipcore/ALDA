@@ -3,10 +3,8 @@ package algorithmDesign.project.chess2;
 import algorithmDesign.project.chess2.pieces.*;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class Board {
 
@@ -15,7 +13,11 @@ public class Board {
     public static final int[] DIRECTION_OFFSETS = {
             8, -8, 1, -1, 7, -7, 9, -9
     };
-    private static Map<Character, Character> pieceToSymbol = Map.ofEntries(
+
+    private static final Random random = new Random();
+    private static final Map<String, Integer> repetitionMap = new HashMap<>();
+
+    private static final Map<Character, Character> pieceToSymbol = Map.ofEntries(
             Map.entry('P', '♟'),
             Map.entry('N', '♞'),
             Map.entry('B', '♝'),
@@ -75,7 +77,7 @@ public class Board {
         board = new Piece[64];
 
         setupBoard(this.board, splits[0]);
-        this.colorToMove = fen.contains("w") ? Color.WHITE : Color.BLACK;
+        this.colorToMove = splits[1].equals("w") ? Color.WHITE : Color.BLACK;
         this.castlingRights = splits[2];
         this.halfMoveClock = Integer.parseInt(splits[4]);
         this.fullMoveClock = Integer.parseInt(splits[5]);
@@ -135,6 +137,11 @@ public class Board {
 
         if(hasInsufficientMaterial()){
             System.out.println("Insufficient material");
+            return true;
+        }
+
+        if(repetitionMap.getOrDefault(currentFen,0)>= 3){
+            System.out.println("Repetition");
             return true;
         }
         return false;
@@ -295,8 +302,8 @@ public class Board {
     private String getFenFromBoard(Piece[] board, Move latestMove) {
         return generateFenPos(board) + " " +
                 (this.colorToMove.equals(Color.WHITE) ? "b" : "w") + " " +
-                getCastlingRightsFromMove(latestMove) + " " +
-                generateEnPassantSquare(latestMove) + " " +
+                generateFenCastlingRightsFromMove(latestMove) + " " +
+                generateFenEnPassantSquare(latestMove) + " " +
                 generateFenHalfMoveClock(latestMove) + " " +
                 generateFenFullMoveClock();
     }
@@ -325,7 +332,7 @@ public class Board {
 
     //------------------------------------------------------------------------------------------------------------------
 
-    private String generateEnPassantSquare(Move latestMove) {
+    private String generateFenEnPassantSquare(Move latestMove) {
         if (latestMove.isPawnDoublePush()) {
             char startFile = (char) ('a' + latestMove.getTo() % 8);
             int startRank = 8 - latestMove.getTo() / 8;
@@ -371,7 +378,7 @@ public class Board {
 
     //------------------------------------------------------------------------------------------------------------------
 
-    private String getCastlingRightsFromMove(Move latestMove) {
+    private String generateFenCastlingRightsFromMove(Move latestMove) {
         String castlingRights = this.castlingRights;
         if (latestMove.isKingMove() || latestMove.isKingSideCastle() || latestMove.isQueenSideCastle()) {
             String queenCastlingToRemove = colorToMove.equals(Color.WHITE) ? "Q" : "q";
@@ -453,5 +460,27 @@ public class Board {
 
     public String getFen() {
         return currentFen;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+
+    public void updateRepetitions() {
+        repetitionMap.put(currentFen, repetitionMap.getOrDefault(currentFen, 0) + 1);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+
+    public double getEvaluation() {
+        double eval = 0;
+        for(int i = 0; i < board.length; i++){
+            Piece piece = board[i];
+            if(piece != null){
+                eval += piece.getPieceValue(i);
+            }
+        }
+
+        return eval * random.nextDouble();
     }
 }

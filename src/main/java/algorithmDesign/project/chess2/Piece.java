@@ -8,4 +8,5 @@ public interface Piece {
     char getSymbol();
     List<Move> getValidMoves(Piece[] board, List<Integer> visibleSquares, int startSquare);
     List<Integer> getVisibleSquares(Piece[] board, int startSquare);
+    int getPieceValue(int square);
 }

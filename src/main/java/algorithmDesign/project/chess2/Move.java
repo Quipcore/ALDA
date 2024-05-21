@@ -54,9 +54,10 @@ public class Move {
     public String toString() {
 
         if (piece.equalsIgnoreCase("o-o-o") || piece.equalsIgnoreCase("o-o")) {
-            return "Move{" +
-                    "piece=" + piece +
-                    "}";
+//            return "Move{" +
+//                    "piece=" + piece +
+//                    "}";
+            return piece;
         }
 
         int startFile = 'a' + startIndex % 8;
@@ -65,15 +66,20 @@ public class Move {
         int endFile = 'a' + endIndex % 8;
         int endRank = 8 - endIndex / 8;
 
-        if (piece.equalsIgnoreCase("p")) {
-            return "" + (char) endFile + (endRank);
+
+        String piece = this.piece;
+        if (this.piece.equalsIgnoreCase("p")) {
+            piece = "";
+//            return "" + (char) endFile + (endRank);
         }
 
-        return "Move{" +
-                "startSquare=" + (char) startFile + (startRank) + ", " +
-                "endSquare=" + (char) endFile + (endRank) + ", " +
-                "piece=" + piece +
-                '}';
+        return piece + (char) endFile + (endRank);
+
+//        return "Move{" +
+//                "startSquare=" + (char) startFile + (startRank) + ", " +
+//                "endSquare=" + (char) endFile + (endRank) + ", " +
+//                "piece=" + piece +
+//                '}';
     }
 
     public int getTo() {

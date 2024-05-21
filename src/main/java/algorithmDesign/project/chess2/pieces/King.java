@@ -17,18 +17,28 @@ public class King implements Piece {
     private final boolean whiteQueenSideCastlingRights;
     private final boolean blackKingSideCastlingRights;
     private final boolean blackQueenSideCastlingRights;
+    private final int pieceValue;
 
     //------------------------------------------------------------------------------------------------------------------
 
     public King(Color color, String fen) {
         this.color = color;
         this.symbol = color.equals(Color.WHITE) ? 'K' : 'k';
+        this.pieceValue = color == Color.WHITE ? 100000 : -100000;
 
         String castlingRights = fen.split(" ")[2];
         this.whiteKingSideCastlingRights = castlingRights.contains("K");
         this.whiteQueenSideCastlingRights = castlingRights.contains("Q");
         this.blackKingSideCastlingRights = castlingRights.contains("k");
         this.blackQueenSideCastlingRights = castlingRights.contains("q");
+
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public int getPieceValue(int square) {
+        return this.pieceValue;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -109,6 +119,11 @@ public class King implements Piece {
 
         if (board[targetSquare] == null && !visibleSquares.contains(targetSquare)) {
             return true;
+        }
+
+        //prevent wrapping
+        if (targetSquare % 8 == 0 && (targetSquare - 1) % 8 == 7) {
+            return false;
         }
 
         return board[targetSquare] != null && !board[targetSquare].getColor().equals(this.color) && !visibleSquares.contains(targetSquare);

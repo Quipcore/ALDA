@@ -1,5 +1,8 @@
 package algorithmDesign.project.chess2;
 
+import algorithmDesign.project.minimax.Player;
+import algorithmDesign.project.minimax.Position;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,8 +12,13 @@ public class Main {
     private static final String debugFEN = "8/p5k1/3rQP1p/2b3p1/2b5/2pn1R2/P2K2B1/4R3 w - - 0 63";
 
     public static void main(String[] args) {
-
-        playRandomGame();
+        Position position = new Position(Player.WHITE);
+        for(int i = 0; i < 100 || position.isGameOver(); i++){
+            Position optimalPosition = position.getOptimalPosition();
+            optimalPosition.getBoard().printBoard();
+            System.out.println();
+            position = optimalPosition;
+        }
     }
 
     public static void playRandomGame() {
@@ -35,6 +43,7 @@ public class Main {
             }
             board = board.makeMove(move);
             board.printBoard();
+            board.updateRepetitions();
             System.out.println();
             fens.add(board.getFen());
         }

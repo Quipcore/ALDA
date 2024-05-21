@@ -12,12 +12,30 @@ public class Bishop implements Piece {
 
     private final Color color;
     private final char symbol;
-
+    private final int pieceValue;
+    private final int[] bonusEval = {
+            50, 40, 30, 20, 20, 30, 40, 50,
+            40, 30, 20, 10, 10, 20, 30, 40,
+            30, 20, 10, 1, 1, 10, 20, 30,
+            20, 10, 1, 0, 0, 1, 10, 20,
+            20, 10, 1, 0, 0, 1, 10, 20,
+            30, 20, 10, 1, 1, 10, 20, 30,
+            40, 30, 20, 10, 10, 20, 30, 40,
+            50, 40, 30, 20, 20, 30, 40, 50
+    };
     //------------------------------------------------------------------------------------------------------------------
 
     public Bishop(Color color) {
         this.color = color;
         this.symbol = color == Color.WHITE ? 'B' : 'b';
+        this.pieceValue = color == Color.WHITE ? 3 : -3;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public int getPieceValue(int square) {
+        return this.pieceValue * bonusEval[square];
     }
 
     //------------------------------------------------------------------------------------------------------------------
